@@ -1,69 +1,1163 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Recorrido</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario ART – Accidente de Trabajo | Iezzi & Varone</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    #map { height: 400px; }
+    :root {
+      --navy:    #1a3a6b;
+      --celeste: #4db8d4;
+      --rojo:    #e63329;
+      --verde:   #27ae60;
+      --naranja: #e67e22;
+      --bg:      #f0f3f8;
+      --card:    #ffffff;
+      --text:    #1e2a3a;
+      --muted:   #6b7a90;
+      --border:  #d1d9e6;
+      --input-bg:#f8fafc;
+      --shadow:  0 2px 16px rgba(26,58,107,0.09);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--navy);
+      border-bottom: 4px solid var(--celeste);
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .header img { height: 170px; object-fit: contain; }
+    .header-sub {
+      color: var(--celeste);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #1e4d8c 100%);
+      color: white;
+      text-align: center;
+      padding: 28px 20px 24px;
+    }
+    .hero h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+    .hero p  { font-size: 13px; color: #a8c4e8; margin-top: 6px; }
+
+    /* ── STEPS ── */
+    .progress-wrap {
+      background: var(--navy);
+      padding: 0 16px 18px;
+      display: flex;
+      justify-content: center;
+    }
+    .steps {
+      display: flex;
+      align-items: center;
+      max-width: 680px;
+      width: 100%;
+      margin-top: 16px;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      cursor: pointer;
+    }
+    .step-circle {
+      width: 35px; height: 35px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.45);
+      font-weight: 700;
+      font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid rgba(255,255,255,0.18);
+      transition: all 0.3s;
+    }
+    .step.active .step-circle  { background: var(--celeste); color: white; border-color: var(--celeste); }
+    .step.done  .step-circle   { background: var(--verde); color: white; border-color: var(--verde); }
+    .step-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      margin-top: 4px;
+      text-align: center;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .step.active .step-label { color: var(--celeste); font-weight: 600; }
+    .step.done   .step-label { color: var(--verde); }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: rgba(255,255,255,0.12);
+      margin-bottom: 18px;
+    }
+
+    /* ── CONTAINER ── */
+    .container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+
+    /* ── SECTIONS ── */
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+    .section-card {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      background: linear-gradient(90deg, var(--navy), #1e4d8c);
+      color: white;
+      padding: 13px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title .badge {
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.5px;
+    }
+    .section-body { padding: 20px; }
+
+    /* ── FIELDS ── */
+    .field { margin-bottom: 15px; }
+    .field:last-child { margin-bottom: 0; }
+    label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    label .req { color: var(--rojo); margin-left: 2px; }
+
+    input[type=text], input[type=date], input[type=email],
+    input[type=tel], input[type=number], input[type=time], select, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--input-bg);
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--celeste);
+      box-shadow: 0 0 0 3px rgba(77,184,212,0.14);
+      background: white;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7a90' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    textarea { resize: vertical; min-height: 100px; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+    /* ── TOGGLE SI/NO ── */
+    .toggle-group { display: flex; gap: 10px; }
+    .toggle-btn {
+      flex: 1;
+      padding: 9px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .toggle-btn:hover { border-color: var(--celeste); color: var(--celeste); }
+    .toggle-btn.active-si  { background: #f0fdf4; border-color: var(--verde); color: var(--verde); }
+    .toggle-btn.active-no  { background: #fff5f5; border-color: #e0b0b0; color: #c0392b; }
+
+    /* ── CONDITIONAL FIELDS ── */
+    .conditional { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s; }
+    .conditional.hidden { max-height: 0; opacity: 0; pointer-events: none; }
+    .conditional.visible { max-height: 1200px; opacity: 1; }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      background: #f0f8fb;
+      border-left: 3px solid var(--celeste);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .info-box strong { color: var(--navy); }
+
+    /* ── FILE UPLOAD ── */
+    .file-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .file-item label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 5px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .file-drop {
+      border: 1.5px dashed var(--border);
+      border-radius: 8px;
+      padding: 14px 10px;
+      text-align: center;
+      background: var(--input-bg);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .file-drop:hover { border-color: var(--celeste); background: #f0f8fb; }
+    .file-drop input[type=file] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+    .file-drop .icon { font-size: 22px; display: block; }
+    .file-drop .file-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .file-drop.has-file { border-color: var(--verde); background: #f0fdf4; }
+    .file-drop.has-file .file-label { color: var(--verde); }
+
+    /* ── CANVAS FIRMA ── */
+    .canvas-wrapper {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      background: #fafbfc;
+      position: relative;
+      width: 100%;
+      height: 210px;
+      margin-bottom: 12px;
+    }
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      cursor: crosshair;
+      touch-action: none;
+      border-radius: 10px;
+    }
+    .canvas-hint {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #c0c8d8;
+      font-size: 13px;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      text-align: center;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-row { display: flex; gap: 10px; margin-top: 6px; }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-primary { background: var(--navy); color: white; flex: 1; }
+    .btn-primary:hover { background: #1e4d8c; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,58,107,0.25); }
+    .btn-secondary { background: var(--card); color: var(--navy); border: 1.5px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--navy); }
+    .btn-danger { background: #fff5f5; color: var(--rojo); border: 1.5px solid #f5c0be; font-size: 12px; padding: 8px 16px; }
+    .btn-submit {
+      background: linear-gradient(135deg, #1e7a4a, var(--verde));
+      color: white; flex: 1; font-size: 15px; padding: 14px;
+    }
+    .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(39,174,96,0.3); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* ── SCREENS ── */
+    #screenOk, #screenError { display: none; }
+    .screen-card {
+      background: white; border-radius: 16px; box-shadow: var(--shadow);
+      padding: 40px 30px; text-align: center; margin-top: 24px;
+    }
+    .screen-icon { font-size: 56px; margin-bottom: 16px; }
+    .screen-card h2 { font-size: 20px; color: var(--navy); margin-bottom: 8px; }
+    .screen-card p  { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      .row-2, .row-3, .file-grid { grid-template-columns: 1fr; }
+      .btn-row { flex-direction: column; }
+      .step-label { display: none; }
+    }
+
+    /* ── FOOTER ── */
+    .footer { text-align: center; padding: 20px; font-size: 11px; color: var(--muted); }
+    .footer a { color: var(--celeste); text-decoration: none; }
+
+    /* ── CAMPOS INVÁLIDOS ── */
+    .field-error input, .field-error select, .field-error textarea {
+      border-color: var(--rojo) !important;
+      background: #fff5f5 !important;
+      box-shadow: 0 0 0 3px rgba(230,51,41,0.12);
+    }
+    .field-error-msg {
+      color: var(--rojo); font-size: 11px; margin-top: 4px;
+      font-weight: 600; display: flex; align-items: center; gap: 4px;
+    }
   </style>
 </head>
 <body>
 
-<h3>Seleccioná origen y destino</h3>
-<div id="map"></div>
-<button onclick="enviar()">Enviar recorrido</button>
+<!-- HEADER -->
+<div class="header">
+  <img src="https://iezzivarone.com/assets/36_anios_compB-f0098160.png" alt="Iezzi & Varone" onerror="this.style.display='none'">
+  <div class="header-sub">Formulario ART – Accidente Laboral</div>
+</div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- HERO -->
+<div class="hero">
+  <h1>Denuncia ART — Accidente de Trabajo</h1>
+  <p>Completá el formulario paso a paso. Tus datos están seguros y protegidos.</p>
+</div>
+
+<!-- STEPS -->
+<div class="progress-wrap">
+  <div class="steps">
+    <div class="step active" id="step-1" onclick="goToStep(1)">
+      <div class="step-circle">1</div>
+      <div class="step-label">Hecho</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-2" onclick="goToStep(2)">
+      <div class="step-circle">2</div>
+      <div class="step-label">Lesiones</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-3" onclick="goToStep(3)">
+      <div class="step-circle">3</div>
+      <div class="step-label">Aviso</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-4" onclick="goToStep(4)">
+      <div class="step-circle">4</div>
+      <div class="step-label">Trabajo</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-5" onclick="goToStep(5)">
+      <div class="step-circle">5</div>
+      <div class="step-label">Terceros</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-6" onclick="goToStep(6)">
+      <div class="step-circle">6</div>
+      <div class="step-label">Docs</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTAINER -->
+<div class="container">
+
+  <!-- ══════════════════════════════════════════════
+       PASO 1 – DATOS DEL HECHO
+  ══════════════════════════════════════════════ -->
+  <div class="section active" id="sec-1">
+
+    <div class="section-card">
+      <div class="section-title">📍 Lugar y Hora del Hecho <span class="badge">PASO 1 / 6</span></div>
+      <div class="section-body">
+        <div class="field">
+          <label>Calle donde ocurrió el hecho <span class="req">*</span></label>
+          <input type="text" id="calle_hecho" placeholder="Nombre de la calle, ruta o lugar" maxlength="60">
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Localidad del hecho <span class="req">*</span></label>
+            <input type="text" id="localidad_hecho" placeholder="Ciudad / Localidad" maxlength="40">
+          </div>
+          <div class="field">
+            <label>Fecha del hecho <span class="req">*</span></label>
+            <input type="date" id="fecha_hecho">
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Horario del hecho <span class="req">*</span></label>
+            <input type="time" id="hora_hecho">
+          </div>
+          <div class="field">
+            <label>Turno / Jornada</label>
+            <select id="turno_hecho">
+              <option value="">Seleccionar</option>
+              <option>Mañana</option>
+              <option>Tarde</option>
+              <option>Noche</option>
+              <option>Madrugada</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Relato detallado del hecho <span class="req">*</span></label>
+          <textarea id="relato_hecho" placeholder="Describí con el mayor detalle posible cómo sucedió el accidente: qué estabas haciendo, qué ocurrió, cómo fue el impacto, etc." style="min-height: 130px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="nextStep(1)">Continuar →</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       PASO 2 – LESIONES Y ATENCIÓN MÉDICA
+  ══════════════════════════════════════════════ -->
+  <div class="section" id="sec-2">
+
+    <div class="section-card">
+      <div class="section-title">🏥 Atención Médica y Lesiones <span class="badge">PASO 2 / 6</span></div>
+      <div class="section-body">
+        <div class="field">
+          <label>¿En qué hospital / clínica se atendió? <span class="req">*</span></label>
+          <input type="text" id="hospital" placeholder="Nombre del establecimiento de salud" maxlength="60">
+        </div>
+        <div class="field">
+          <label>¿Qué lesiones tuvo? <span class="req">*</span></label>
+          <textarea id="lesiones" placeholder="Describí todas las lesiones: fracturas, heridas, contusiones, traumatismos, quemaduras, etc. Indicá qué parte del cuerpo."></textarea>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="field">
+          <label>¿Intervino ambulancia?</label>
+          <div class="toggle-group">
+            <button type="button" class="toggle-btn" id="btn-ambulancia-si" onclick="setToggle('ambulancia','si')">✅ Sí</button>
+            <button type="button" class="toggle-btn" id="btn-ambulancia-no" onclick="setToggle('ambulancia','no')">❌ No</button>
+          </div>
+          <input type="hidden" id="ambulancia" value="">
+        </div>
+        <div class="conditional hidden" id="cond-ambulancia">
+          <div class="field" style="margin-top:12px;">
+            <label>Empresa / N° de ambulancia</label>
+            <input type="text" id="datos_ambulancia" placeholder="Ej: SAME, OSDE, número de móvil..." maxlength="60">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(2)">← Volver</button>
+      <button class="btn btn-primary" onclick="nextStep(2)">Continuar →</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       PASO 3 – AVISO AL EMPLEADOR
+  ══════════════════════════════════════════════ -->
+  <div class="section" id="sec-3">
+
+    <div class="section-card">
+      <div class="section-title">📢 Aviso al Empleador <span class="badge">PASO 3 / 6</span></div>
+      <div class="section-body">
+        <div class="info-box">
+          <strong>Importante:</strong> Completá los datos sobre cómo y cuándo avisaste del accidente a tu empleador o supervisor.
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Fecha en que dio aviso <span class="req">*</span></label>
+            <input type="date" id="fecha_aviso">
+          </div>
+          <div class="field">
+            <label>Hora del aviso</label>
+            <input type="time" id="hora_aviso">
+          </div>
+        </div>
+        <div class="field">
+          <label>¿Cómo le dio aviso? <span class="req">*</span></label>
+          <select id="medio_aviso">
+            <option value="">Seleccionar medio</option>
+            <option>Personalmente</option>
+            <option>Llamada telefónica</option>
+            <option>Mensaje de texto / WhatsApp</option>
+            <option>Correo electrónico</option>
+            <option>A través de un compañero</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="field" id="campo-medio-otro" style="display:none">
+          <label>Especificar medio de aviso</label>
+          <input type="text" id="medio_aviso_otro" placeholder="Describa cómo dio aviso" maxlength="80">
+        </div>
+        <div class="field">
+          <label>¿A quién le dio aviso? <span class="req">*</span></label>
+          <input type="text" id="a_quien_aviso" placeholder="Nombre y cargo de la persona avisada (ej: Juan Pérez - Supervisor)" maxlength="60">
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(3)">← Volver</button>
+      <button class="btn btn-primary" onclick="nextStep(3)">Continuar →</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       PASO 4 – DATOS LABORALES
+  ══════════════════════════════════════════════ -->
+  <div class="section" id="sec-4">
+
+    <div class="section-card">
+      <div class="section-title">💼 Datos del Trabajo <span class="badge">PASO 4 / 6</span></div>
+      <div class="section-body">
+        <div class="field">
+          <label>Domicilio del trabajo / empleador <span class="req">*</span></label>
+          <input type="text" id="domicilio_trabajo" placeholder="Calle, número, localidad" maxlength="80">
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Puesto / Cargo <span class="req">*</span></label>
+            <input type="text" id="puesto" placeholder="Ej: Operario, Chofer, Administrativo..." maxlength="40">
+          </div>
+          <div class="field">
+            <label>Antigüedad en el puesto</label>
+            <input type="text" id="antiguedad" placeholder="Ej: 2 años, 6 meses" maxlength="20">
+          </div>
+        </div>
+        <div class="field">
+          <label>Jornada laboral y horarios <span class="req">*</span></label>
+          <input type="text" id="jornada_horarios" placeholder="Ej: Lunes a viernes de 8:00 a 17:00 hs" maxlength="80">
+        </div>
+        <div class="field">
+          <label>Domicilio actual del empleado <span class="req">*</span></label>
+          <input type="text" id="domicilio_actual" placeholder="Calle, número, localidad, provincia" maxlength="80">
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="info-box">
+          <strong>Recorrido al trabajo:</strong> Esta información es necesaria para acreditar el accidente in itinere (ocurrido en el trayecto hacia o desde el trabajo).
+        </div>
+
+        <div class="field">
+          <label>Recorrido habitual de ida y vuelta al trabajo <span class="req">*</span></label>
+          <textarea id="recorrido_diario" placeholder="Describí el trayecto que hacés normalmente para ir y volver del trabajo. Ej: Salgo de mi casa en Av. Mitre 123 (Quilmes), tomo el colectivo 98 hasta Constitución, luego subte línea C hasta..." style="min-height: 110px;"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Transportes que utiliza <span class="req">*</span></label>
+          <div class="toggle-group" style="flex-wrap:wrap; gap:8px;">
+            <button type="button" class="toggle-btn" id="btn-trans-colectivo" onclick="toggleTransporte('colectivo')" style="flex:0 0 auto; padding:8px 14px; font-size:12px;">🚌 Colectivo</button>
+            <button type="button" class="toggle-btn" id="btn-trans-subte" onclick="toggleTransporte('subte')" style="flex:0 0 auto; padding:8px 14px; font-size:12px;">🚇 Subte</button>
+            <button type="button" class="toggle-btn" id="btn-trans-tren" onclick="toggleTransporte('tren')" style="flex:0 0 auto; padding:8px 14px; font-size:12px;">🚆 Tren</button>
+            <button type="button" class="toggle-btn" id="btn-trans-auto" onclick="toggleTransporte('auto')" style="flex:0 0 auto; padding:8px 14px; font-size:12px;">🚗 Auto propio</button>
+            <button type="button" class="toggle-btn" id="btn-trans-moto" onclick="toggleTransporte('moto')" style="flex:0 0 auto; padding:8px 14px; font-size:12px;">🏍 Moto</button>
+            <button type="button" class="toggle-btn" id="btn-trans-pie" onclick="toggleTransporte('pie')" style="flex:0 0 auto; padding:8px 14px; font-size:12px;">🚶 A pie</button>
+          </div>
+          <input type="hidden" id="transportes_usados" value="">
+        </div>
+
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(4)">← Volver</button>
+      <button class="btn btn-primary" onclick="nextStep(4)">Continuar →</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       PASO 5 – TERCEROS / VEHÍCULO / DENUNCIA
+  ══════════════════════════════════════════════ -->
+  <div class="section" id="sec-5">
+
+    <div class="section-card">
+      <div class="section-title">🚔 Intervención de Terceros <span class="badge">PASO 5 / 6</span></div>
+      <div class="section-body">
+
+        <!-- Intervino policía -->
+        <div class="field">
+          <label>¿Intervino la policía?</label>
+          <div class="toggle-group">
+            <button type="button" class="toggle-btn" id="btn-policia-si" onclick="setToggle('policia','si')">✅ Sí</button>
+            <button type="button" class="toggle-btn" id="btn-policia-no" onclick="setToggle('policia','no')">❌ No</button>
+          </div>
+          <input type="hidden" id="policia" value="">
+        </div>
+
+        <!-- Hubo denuncia policial -->
+        <div class="field" style="margin-top:14px;">
+          <label>¿Hubo denuncia policial?</label>
+          <div class="toggle-group">
+            <button type="button" class="toggle-btn" id="btn-denuncia-si" onclick="setToggle('denuncia','si')">✅ Sí</button>
+            <button type="button" class="toggle-btn" id="btn-denuncia-no" onclick="setToggle('denuncia','no')">❌ No</button>
+          </div>
+          <input type="hidden" id="denuncia" value="">
+        </div>
+        <div class="conditional hidden" id="cond-denuncia">
+          <div class="row-2" style="margin-top:12px;">
+            <div class="field">
+              <label>N° de denuncia</label>
+              <input type="text" id="nro_denuncia" placeholder="Número de denuncia policial" maxlength="30">
+            </div>
+            <div class="field">
+              <label>Comisaría / Dependencia</label>
+              <input type="text" id="comisaria" placeholder="Nombre o número de comisaría" maxlength="50">
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Vehículo que lo embistió -->
+        <div class="field">
+          <label>¿Fue embestido por un vehículo?</label>
+          <div class="toggle-group">
+            <button type="button" class="toggle-btn" id="btn-vehiculo-si" onclick="setToggle('vehiculo','si')">✅ Sí</button>
+            <button type="button" class="toggle-btn" id="btn-vehiculo-no" onclick="setToggle('vehiculo','no')">❌ No</button>
+          </div>
+          <input type="hidden" id="vehiculo" value="">
+        </div>
+        <div class="conditional hidden" id="cond-vehiculo">
+          <div class="info-box" style="margin-top:12px;">
+            <strong>Datos del vehículo que lo embistió</strong>
+          </div>
+          <div class="row-3">
+            <div class="field">
+              <label>Patente / Dominio</label>
+              <input type="text" id="veh_patente" placeholder="ABC123" maxlength="8" style="text-transform:uppercase">
+            </div>
+            <div class="field">
+              <label>Marca</label>
+              <input type="text" id="veh_marca" placeholder="Ej: Ford" maxlength="20">
+            </div>
+            <div class="field">
+              <label>Modelo</label>
+              <input type="text" id="veh_modelo" placeholder="Ej: Ranger" maxlength="20">
+            </div>
+          </div>
+          <div class="row-3">
+            <div class="field">
+              <label>Color</label>
+              <input type="text" id="veh_color" placeholder="Ej: Blanco" maxlength="15">
+            </div>
+            <div class="field">
+              <label>Año</label>
+              <input type="text" id="veh_anio" placeholder="2020" maxlength="4" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label>Tipo de vehículo</label>
+              <select id="veh_tipo">
+                <option value="">Seleccionar</option>
+                <option>Auto</option>
+                <option>Camioneta</option>
+                <option>Camión</option>
+                <option>Moto</option>
+                <option>Colectivo / Bus</option>
+                <option>Bicicleta</option>
+                <option>Otro</option>
+              </select>
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label>Nombre del conductor</label>
+              <input type="text" id="veh_conductor" placeholder="Apellido y Nombre" maxlength="40">
+            </div>
+            <div class="field">
+              <label>DNI del conductor</label>
+              <input type="text" id="veh_conductor_dni" placeholder="Sin puntos" maxlength="8" inputmode="numeric">
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label>Teléfono del conductor</label>
+              <input type="tel" id="veh_conductor_tel" placeholder="11 XXXX-XXXX" maxlength="12" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label>Aseguradora del vehículo</label>
+              <input type="text" id="veh_aseguradora" placeholder="Nombre de la aseguradora" maxlength="40">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(5)">← Volver</button>
+      <button class="btn btn-primary" onclick="nextStep(5)">Continuar →</button>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       PASO 6 – DOCUMENTACIÓN Y FIRMA
+  ══════════════════════════════════════════════ -->
+  <div class="section" id="sec-6">
+
+    <div class="section-card">
+      <div class="section-title">📎 Documentación a Adjuntar <span class="badge">PASO 6 / 6</span></div>
+      <div class="section-body">
+        <div class="info-box">
+          <strong>Adjuntá los documentos que tengas disponibles.</strong> Podés tomar fotos con el celular. Los formatos aceptados son JPG, PNG y PDF.
+        </div>
+
+        <div class="file-grid">
+          <div class="file-item">
+            <label>📄 Certificado médico</label>
+            <div class="file-drop" id="drop-cert-medico">
+              <span class="icon">🏥</span>
+              <div class="file-label">Subir certificado médico</div>
+              <input type="file" id="cert_medico" accept="image/*,.pdf" onchange="onFileChange(this,'drop-cert-medico')">
+            </div>
+          </div>
+          <div class="file-item">
+            <label>🩹 Constancia de lesiones</label>
+            <div class="file-drop" id="drop-const-lesiones">
+              <span class="icon">📋</span>
+              <div class="file-label">Subir constancia de lesiones</div>
+              <input type="file" id="const_lesiones" accept="image/*,.pdf" onchange="onFileChange(this,'drop-const-lesiones')">
+            </div>
+          </div>
+          <div class="file-item">
+            <label>📸 Fotos de lesiones</label>
+            <div class="file-drop" id="drop-fotos-lesiones">
+              <span class="icon">📷</span>
+              <div class="file-label">Subir foto de las lesiones</div>
+              <input type="file" id="fotos_lesiones" accept="image/*" onchange="onFileChange(this,'drop-fotos-lesiones')">
+            </div>
+          </div>
+          <div class="file-item">
+            <label id="label-copia-denuncia">📑 Copia denuncia policial / Seguro del vehículo</label>
+            <div class="file-drop" id="drop-copia-denuncia">
+              <span class="icon">🚔</span>
+              <div class="file-label" data-default="Subir copia de la denuncia">Subir copia de la denuncia</div>
+              <input type="file" id="copia_denuncia" accept="image/*,.pdf" onchange="onFileChange(this,'drop-copia-denuncia')">
+            </div>
+          </div>
+        </div>
+
+        <div class="divider" style="margin-top:16px;"></div>
+
+        <div class="file-grid" style="margin-top:4px;">
+          <div class="file-item">
+            <label>🪪 DNI — Frente y dorso <span class="req">*</span></label>
+            <div class="file-drop" id="drop-dni-frentes">
+              <span class="icon">🪪</span>
+              <div class="file-label" data-default="Subir ambas caras del DNI">Subir ambas caras del DNI</div>
+              <input type="file" id="dni_ambos_frentes" accept="image/*,.pdf" onchange="onFileChange(this,'drop-dni-frentes')">
+            </div>
+          </div>
+          <div class="file-item">
+            <label>🚌 Constancia SUBE <span style="color:var(--muted); font-size:10px; font-weight:400; text-transform:none; letter-spacing:0;">(opcional)</span></label>
+            <div class="file-drop" id="drop-sube">
+              <span class="icon">🚌</span>
+              <div class="file-label" data-default="Subir constancia de viaje">Subir constancia de viaje</div>
+              <input type="file" id="constancia_sube" accept="image/*,.pdf" onchange="onFileChange(this,'drop-sube')">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-title">✍️ Firma del Empleado</div>
+      <div class="section-body">
+        <div class="row-2" style="margin-bottom:15px;">
+          <div class="field">
+            <label>DNI del declarante <span class="req">*</span></label>
+            <input type="text" id="dni_declarante" placeholder="Sin puntos" maxlength="8" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label>Apellido y Nombre <span class="req">*</span></label>
+            <input type="text" id="aclaracion" placeholder="Aclaración de firma" maxlength="40">
+          </div>
+        </div>
+        <div class="canvas-wrapper" id="wrapper">
+          <canvas id="canvas"></canvas>
+          <div class="canvas-hint" id="hint">✍️ Firmá aquí con el dedo o mouse</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-danger" onclick="limpiarFirma()">🗑 Limpiar firma</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="prevStep(6)">← Volver</button>
+      <button class="btn btn-submit" id="btnSubmit" onclick="enviarFormulario()">✅ Enviar Formulario ART</button>
+    </div>
+  </div>
+
+
+  <!-- ── SCREEN OK ── -->
+  <div id="screenOk">
+    <div class="screen-card">
+      <div class="screen-icon">✅</div>
+      <h2>Formulario enviado con éxito</h2>
+      <p>Recibimos tu declaración ART. Nuestro equipo tomará contacto con vos a la brevedad.<br><br>
+      <strong>Iezzi & Varone</strong> — Asistencia garantizada las 24 hs.</p>
+    </div>
+  </div>
+
+  <!-- ── SCREEN ERROR ── -->
+  <div id="screenError">
+    <div class="screen-card" style="border-top: 4px solid var(--rojo);">
+      <div class="screen-icon">⚠️</div>
+      <h2>Error al enviar</h2>
+      <p>Hubo un problema al procesar tu formulario. Por favor, revisá tu conexión e intentá nuevamente.</p>
+      <div class="btn-row" style="margin-top:20px; justify-content:center;">
+        <button class="btn btn-secondary" onclick="resetError()">Reintentar</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
 
 <script>
-let map = L.map('map').setView([-34.6037, -58.3816], 13);
+  const WEBHOOK_URL = "https://hook.us1.make.com/TU_WEBHOOK_ART_AQUI"; // ← Reemplazar con tu webhook
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19
-}).addTo(map);
+  // ── Navegación por pasos ──
+  let currentStep = 1;
+  const TOTAL_STEPS = 6;
 
-let puntos = [];
-let linea;
+  const requiredByStep = {
+    1: ["calle_hecho","localidad_hecho","fecha_hecho","hora_hecho","relato_hecho"],
+    2: ["hospital","lesiones"],
+    3: ["fecha_aviso","medio_aviso","a_quien_aviso"],
+    4: ["domicilio_trabajo","puesto","jornada_horarios","domicilio_actual","recorrido_diario","transportes_usados"],
+    5: [],
+    6: ["dni_declarante","aclaracion"],
+  };
 
-map.on('click', async function(e) {
-  if (puntos.length >= 2) {
-    puntos = [];
-    if (linea) map.removeLayer(linea);
+  function validateStep(n) {
+    let ok = true;
+    (requiredByStep[n] || []).forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const field = el.closest('.field');
+      const prev = field?.querySelector('.field-error-msg');
+      if (prev) prev.remove();
+      if (field) field.classList.remove('field-error');
+      const val = el.value.trim();
+      if (!val) {
+        ok = false;
+        if (field) {
+          field.classList.add('field-error');
+          const msg = document.createElement('div');
+          msg.className = 'field-error-msg';
+          msg.innerHTML = '⚠ Este campo es obligatorio';
+          field.appendChild(msg);
+        }
+      }
+    });
+    if (!ok) {
+      const first = document.querySelector('#sec-'+n+' .field-error');
+      if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+    return ok;
   }
 
-  puntos.push(e.latlng);
-  L.marker(e.latlng).addTo(map);
-
-  if (puntos.length === 2) {
-    const url = `https://router.project-osrm.org/route/v1/driving/
-      ${puntos[0].lng},${puntos[0].lat};
-      ${puntos[1].lng},${puntos[1].lat}?overview=full&geometries=geojson`;
-
-    const res = await fetch(url);
-    const data = await res.json();
-
-    const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-
-    linea = L.polyline(coords, {color: 'blue'}).addTo(map);
-  }
-});
-
-function enviar() {
-  if (puntos.length < 2) {
-    alert("Seleccioná origen y destino");
-    return;
+  function goToStep(n) {
+    if (n > currentStep) return; // solo avanzar con botón
+    document.getElementById('sec-'+currentStep).classList.remove('active');
+    document.getElementById('step-'+currentStep).classList.remove('active');
+    currentStep = n;
+    document.getElementById('sec-'+n).classList.add('active');
+    document.getElementById('step-'+n).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  fetch("https://TU-N8N/webhook/ruta", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      origen: puntos[0],
-      destino: puntos[1]
-    })
+  function nextStep(n) {
+    if (!validateStep(n)) return;
+    document.getElementById('sec-'+n).classList.remove('active');
+    document.getElementById('step-'+n).classList.remove('active');
+    document.getElementById('step-'+n).classList.add('done');
+    currentStep = n + 1;
+    document.getElementById('sec-'+currentStep).classList.add('active');
+    document.getElementById('step-'+currentStep).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function prevStep(n) {
+    document.getElementById('sec-'+n).classList.remove('active');
+    document.getElementById('step-'+n).classList.remove('active');
+    document.getElementById('step-'+(n-1)).classList.remove('done');
+    currentStep = n - 1;
+    document.getElementById('sec-'+currentStep).classList.add('active');
+    document.getElementById('step-'+currentStep).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Toggle SI/NO ──
+  function setToggle(name, val) {
+    const hiddenInput = document.getElementById(name);
+    hiddenInput.value = val;
+    document.getElementById('btn-'+name+'-si').className = 'toggle-btn' + (val==='si' ? ' active-si' : '');
+    document.getElementById('btn-'+name+'-no').className = 'toggle-btn' + (val==='no' ? ' active-no' : '');
+
+    const cond = document.getElementById('cond-'+name);
+    if (cond) {
+      if (val === 'si') {
+        cond.classList.remove('hidden');
+        cond.classList.add('visible');
+      } else {
+        cond.classList.remove('visible');
+        cond.classList.add('hidden');
+      }
+    }
+  }
+
+  // ── Selector de transportes (multi-toggle) ──
+  const transportesSeleccionados = new Set();
+  function toggleTransporte(tipo) {
+    const btn = document.getElementById('btn-trans-' + tipo);
+    if (transportesSeleccionados.has(tipo)) {
+      transportesSeleccionados.delete(tipo);
+      btn.classList.remove('active-si');
+    } else {
+      transportesSeleccionados.add(tipo);
+      btn.classList.add('active-si');
+    }
+    document.getElementById('transportes_usados').value =
+      Array.from(transportesSeleccionados).join(', ');
+  }
+
+  // ── Selector medio de aviso (mostrar campo "otro") ──
+  document.getElementById('medio_aviso').addEventListener('change', function() {
+    document.getElementById('campo-medio-otro').style.display =
+      this.value === 'Otro' ? 'block' : 'none';
   });
-}
+
+  // ── File upload feedback ──
+  function onFileChange(input, dropId) {
+    const drop = document.getElementById(dropId);
+    const label = drop.querySelector('.file-label');
+    if (input.files && input.files[0]) {
+      drop.classList.add('has-file');
+      label.textContent = '✓ ' + input.files[0].name.slice(0,28);
+    } else {
+      drop.classList.remove('has-file');
+      label.textContent = label.dataset.default || 'Subir archivo';
+    }
+  }
+
+  // ── File → base64 ──
+  function fileToBase64(file) {
+    if (!file) return Promise.resolve(null);
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload  = () => res(r.result);
+      r.onerror = () => rej(new Error("No se pudo leer el archivo"));
+      r.readAsDataURL(file);
+    });
+  }
+
+  // ── Canvas de firma ──
+  const wrapper = document.getElementById("wrapper");
+  const canvas  = document.getElementById("canvas");
+  const ctx     = canvas.getContext("2d");
+  const hint    = document.getElementById("hint");
+  let dibujando = false;
+  let firmado   = false;
+
+  function initCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const w   = wrapper.offsetWidth;
+    const h   = wrapper.offsetHeight;
+    canvas.width  = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(dpr, dpr);
+    ctx.strokeStyle = "#1a3a6b";
+    ctx.lineWidth   = 2.5;
+    ctx.lineCap     = "round";
+    ctx.lineJoin    = "round";
+  }
+  window.addEventListener("load",   initCanvas);
+  window.addEventListener("resize", initCanvas);
+
+  function getXY(e) {
+    const rect = canvas.getBoundingClientRect();
+    const src  = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - rect.left, y: src.clientY - rect.top };
+  }
+  function startDraw(e) {
+    e.preventDefault(); dibujando = true; firmado = true;
+    hint.style.opacity = "0";
+    const p = getXY(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+  }
+  function draw(e) {
+    e.preventDefault();
+    if (!dibujando) return;
+    const p = getXY(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+  }
+  function stopDraw() { dibujando = false; }
+
+  canvas.addEventListener("mousedown",  startDraw);
+  canvas.addEventListener("mousemove",  draw);
+  canvas.addEventListener("mouseup",    stopDraw);
+  canvas.addEventListener("mouseleave", stopDraw);
+  canvas.addEventListener("touchstart", startDraw, { passive: false });
+  canvas.addEventListener("touchmove",  draw,      { passive: false });
+  canvas.addEventListener("touchend",   stopDraw);
+
+  function limpiarFirma() {
+    initCanvas(); firmado = false; hint.style.opacity = "1";
+  }
+
+  // ── Envío ──
+  async function enviarFormulario() {
+    if (!validateStep(6)) return;
+    if (!firmado) { alert("Por favor dibuje su firma antes de enviar."); return; }
+
+    const btn = document.getElementById("btnSubmit");
+    btn.disabled    = true;
+    btn.textContent = "⏳ Enviando formulario...";
+
+    try {
+      const [certMedicoB64, constLesionesB64, fotosLesionesB64, copiaDenunciaB64, dniB64, subeB64] =
+        await Promise.all([
+          fileToBase64(document.getElementById("cert_medico").files[0]),
+          fileToBase64(document.getElementById("const_lesiones").files[0]),
+          fileToBase64(document.getElementById("fotos_lesiones").files[0]),
+          fileToBase64(document.getElementById("copia_denuncia").files[0]),
+          fileToBase64(document.getElementById("dni_ambos_frentes").files[0]),
+          fileToBase64(document.getElementById("constancia_sube").files[0]),
+        ]);
+
+      const g  = id => document.getElementById(id)?.value?.trim() || "";
+      const gv = id => document.getElementById(id)?.value || "";
+
+      const payload = {
+        // PASO 1 – Hecho
+        calle_hecho:       g("calle_hecho"),
+        localidad_hecho:   g("localidad_hecho"),
+        fecha_hecho:       g("fecha_hecho"),
+        hora_hecho:        g("hora_hecho"),
+        turno_hecho:       gv("turno_hecho"),
+        relato_hecho:      g("relato_hecho"),
+        // PASO 2 – Lesiones
+        hospital:          g("hospital"),
+        lesiones:          g("lesiones"),
+        ambulancia:        g("ambulancia"),
+        datos_ambulancia:  g("datos_ambulancia"),
+        // PASO 3 – Aviso
+        fecha_aviso:       g("fecha_aviso"),
+        hora_aviso:        g("hora_aviso"),
+        medio_aviso:       gv("medio_aviso"),
+        medio_aviso_otro:  g("medio_aviso_otro"),
+        a_quien_aviso:     g("a_quien_aviso"),
+        // PASO 4 – Trabajo
+        domicilio_trabajo:  g("domicilio_trabajo"),
+        puesto:             g("puesto"),
+        antiguedad:         g("antiguedad"),
+        jornada_horarios:   g("jornada_horarios"),
+        domicilio_actual:   g("domicilio_actual"),
+        recorrido_diario:   g("recorrido_diario"),
+        transportes_usados: g("transportes_usados"),
+        // PASO 5 – Terceros
+        policia:           g("policia"),
+        denuncia:          g("denuncia"),
+        nro_denuncia:      g("nro_denuncia"),
+        comisaria:         g("comisaria"),
+        vehiculo:          g("vehiculo"),
+        veh_patente:       g("veh_patente"),
+        veh_marca:         g("veh_marca"),
+        veh_modelo:        g("veh_modelo"),
+        veh_color:         g("veh_color"),
+        veh_anio:          g("veh_anio"),
+        veh_tipo:          gv("veh_tipo"),
+        veh_conductor:     g("veh_conductor"),
+        veh_conductor_dni: g("veh_conductor_dni"),
+        veh_conductor_tel: g("veh_conductor_tel"),
+        veh_aseguradora:   g("veh_aseguradora"),
+        // PASO 6 – Firma
+        dni_declarante:    g("dni_declarante"),
+        aclaracion:        g("aclaracion"),
+        firma_base64:      canvas.toDataURL("image/png"),
+        // Adjuntos
+        cert_medico:       certMedicoB64,
+        const_lesiones:    constLesionesB64,
+        fotos_lesiones:    fotosLesionesB64,
+        copia_denuncia:    copiaDenunciaB64,
+        dni_ambos_frentes: dniB64,
+        constancia_sube:   subeB64,
+      };
+
+      const res = await fetch(WEBHOOK_URL, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error("HTTP " + res.status);
+
+      document.querySelector(".container").innerHTML = "";
+      document.getElementById("screenOk").style.display = "block";
+      document.querySelector(".container").appendChild(document.getElementById("screenOk"));
+
+    } catch (err) {
+      document.getElementById("screenError").style.display = "block";
+      btn.disabled    = false;
+      btn.textContent = "✅ Enviar Formulario ART";
+    }
+  }
+
+  function resetError() {
+    document.getElementById("screenError").style.display = "none";
+  }
 </script>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>Iezzi & Varone</strong> — Abogados Penalistas de Empresas<br>
+  <a href="https://www.iezzivarone.com" target="_blank">www.iezzivarone.com</a> · Asistencia Garantizada las 24 hs.
+</div>
 
 </body>
 </html>
