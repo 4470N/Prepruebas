@@ -799,20 +799,13 @@
           <div class="info-box" style="margin-bottom:10px;">
             Adjuntá el <strong>Alta Temprana</strong> del empleado o, en su defecto, el <strong>último Recibo de Sueldo</strong>. Estos documentos pueden ser requeridos por la ART para acreditar la relación laboral.
           </div>
-          <div class="field" style="margin-bottom:10px;">
-            <label style="text-transform:none; font-size:12px; font-weight:600; color:var(--muted); letter-spacing:0;">Tipo de documento a adjuntar</label>
-            <select id="doc_laboral_tipo">
-              <option value="">— Seleccionar —</option>
-              <option value="alta_temprana">Alta Temprana (AFIP)</option>
-              <option value="recibo_sueldo">Recibo de Sueldo</option>
-              <option value="ambos">Ambos documentos</option>
-            </select>
+        
           </div>
           <div class="file-grid">
             <div class="file-item">
               <div class="file-drop" id="drop-alta-temprana">
                 <span class="icon">📑</span>
-                <div class="file-label">Alta Temprana (AFIP)<br><small>Tocar para adjuntar</small></div>
+                <div class="file-label">Alta Temprana (ARCA)<br><small>Tocar para adjuntar</small></div>
                 <input type="file" id="alta_temprana" accept="image/*,application/pdf" onchange="markFile(this,'drop-alta-temprana','Alta Temprana ✓')">
               </div>
             </div>
