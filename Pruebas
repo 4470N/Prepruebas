@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Recorrido</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 400px; }
+  </style>
+</head>
+<body>
+
+<h3>Seleccioná origen y destino</h3>
+<div id="map"></div>
+<button onclick="enviar()">Enviar recorrido</button>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+let map = L.map('map').setView([-34.6037, -58.3816], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19
+}).addTo(map);
+
+let puntos = [];
+let linea;
+
+map.on('click', async function(e) {
+  if (puntos.length >= 2) {
+    puntos = [];
+    if (linea) map.removeLayer(linea);
+  }
+
+  puntos.push(e.latlng);
+  L.marker(e.latlng).addTo(map);
+
+  if (puntos.length === 2) {
+    const url = `https://router.project-osrm.org/route/v1/driving/
+      ${puntos[0].lng},${puntos[0].lat};
+      ${puntos[1].lng},${puntos[1].lat}?overview=full&geometries=geojson`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+
+    linea = L.polyline(coords, {color: 'blue'}).addTo(map);
+  }
+});
+
+function enviar() {
+  if (puntos.length < 2) {
+    alert("Seleccioná origen y destino");
+    return;
+  }
+
+  fetch("https://TU-N8N/webhook/ruta", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      origen: puntos[0],
+      destino: puntos[1]
+    })
+  });
+}
+</script>
+
+</body>
+</html>
