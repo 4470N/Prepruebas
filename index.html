@@ -3,1216 +3,1199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ART – Denuncia de Accidente Laboral | Iezzi & Varone</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>Sistema ART – Apertura de Caso | Iezzi & Varone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    /* ══════════════════════════════════════
+       VARIABLES & RESET
+    ══════════════════════════════════════ */
     :root {
-      --navy:    #1a3a6b;
-      --celeste: #4db8d4;
-      --rojo:    #e63329;
-      --verde:   #27ae60;
-      --naranja: #e67e22;
-      --bg:      #f0f3f8;
-      --card:    #ffffff;
-      --text:    #1e2a3a;
-      --muted:   #6b7a90;
-      --border:  #d1d9e6;
-      --input-bg:#f8fafc;
-      --shadow:  0 2px 16px rgba(26,58,107,0.09);
+      --navy:      #0f2a5e;
+      --navy-mid:  #1a3a7a;
+      --navy-light:#1e4d8c;
+      --celeste:   #3ab5d4;
+      --celeste-2: #2196c0;
+      --gold:      #c8972b;
+      --gold-light:#f0c060;
+      --rojo:      #d63031;
+      --verde:     #00b894;
+      --bg:        #f2f5fb;
+      --card:      #ffffff;
+      --text:      #1a2540;
+      --muted:     #64748b;
+      --border:    #d8e2f0;
+      --input-bg:  #f7f9fc;
+      --shadow-sm: 0 1px 4px rgba(15,42,94,0.07);
+      --shadow-md: 0 4px 20px rgba(15,42,94,0.10);
+      --shadow-lg: 0 12px 40px rgba(15,42,94,0.14);
+      --radius:    14px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Outfit', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-bottom: 60px;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── HEADER ── */
-    .header {
+    /* ══════════════════════════════════════
+       NAVBAR
+    ══════════════════════════════════════ */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
       background: var(--navy);
-      border-bottom: 4px solid var(--celeste);
-      padding: 20px 24px;
-      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 24px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 16px rgba(15,42,94,0.25);
     }
-    .header img { height: 170px; object-fit: contain; }
-    .header-sub {
-      color: var(--celeste);
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-top: 10px;
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .navbar-brand img {
+      height: 36px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+    .navbar-brand img.fallback-hide { display: none; }
+    .navbar-title {
+      font-size: 14px;
       font-weight: 600;
-    }
-
-    /* ── HERO ── */
-    .hero {
-      background: linear-gradient(135deg, var(--navy) 0%, #1e4d8c 100%);
       color: white;
-      text-align: center;
-      padding: 28px 20px 24px;
+      letter-spacing: 0.2px;
+      line-height: 1.2;
     }
-    .hero h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
-    .hero p  { font-size: 13px; color: #a8c4e8; margin-top: 6px; }
-
-    /* ── STEPS ── */
-    .progress-wrap {
-      background: var(--navy);
-      padding: 0 16px 18px;
-      display: flex;
-      justify-content: center;
-    }
-    .steps {
-      display: flex;
-      align-items: center;
-      max-width: 680px;
-      width: 100%;
-      margin-top: 16px;
-    }
-    .step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1;
-      cursor: pointer;
-    }
-    .step-circle {
-      width: 35px; height: 35px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.12);
+    .navbar-title span {
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
       color: rgba(255,255,255,0.45);
-      font-weight: 700;
-      font-size: 15px;
-      display: flex; align-items: center; justify-content: center;
-      border: 2px solid rgba(255,255,255,0.18);
-      transition: all 0.3s;
-    }
-    .step.active .step-circle  { background: var(--celeste); color: white; border-color: var(--celeste); }
-    .step.done  .step-circle   { background: var(--verde); color: white; border-color: var(--verde); }
-    .step-label {
-      font-size: 11px;
-      color: rgba(255,255,255,0.35);
-      margin-top: 4px;
-      text-align: center;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
       text-transform: uppercase;
     }
-    .step.active .step-label { color: var(--celeste); font-weight: 600; }
-    .step.done   .step-label { color: var(--verde); }
-    .step-line {
-      flex: 1;
-      height: 2px;
-      background: rgba(255,255,255,0.12);
-      margin-bottom: 18px;
+    .navbar-badge {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
     }
 
-    /* ── CONTAINER ── */
-    .container { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
-
-    /* ── SECTIONS ── */
-    .section { display: none; }
-    .section.active { display: block; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
-
-    .section-card {
-      background: var(--card);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero {
+      position: relative;
       overflow: hidden;
-      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #0d3070 100%);
+      padding: 52px 24px 60px;
+      text-align: center;
     }
-    .section-title {
-      background: linear-gradient(90deg, var(--navy), #1e4d8c);
-      color: white;
-      padding: 13px 20px;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.4px;
-      display: flex;
+    /* Geometric pattern background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(58,181,212,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(58,181,212,0.06) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    /* Gold accent bar */
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--celeste), var(--gold), var(--celeste));
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+    .hero-eyebrow {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-    }
-    .section-title .badge {
-      background: rgba(255,255,255,0.15);
-      border-radius: 20px;
-      padding: 2px 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 30px;
+      padding: 5px 14px;
       font-size: 10px;
-      font-family: 'DM Mono', monospace;
-      letter-spacing: 0.5px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--celeste);
+      margin-bottom: 18px;
     }
-    .section-body { padding: 20px; }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--celeste);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .hero h1 {
+      font-size: clamp(24px, 5vw, 34px);
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .hero h1 .accent { color: var(--celeste); }
+    .hero p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.55);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
 
-    /* ── FIELDS ── */
-    .field { margin-bottom: 15px; }
+    /* ══════════════════════════════════════
+       PROGRESS STRIP
+    ══════════════════════════════════════ */
+    .progress-strip {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .progress-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      align-items: stretch;
+    }
+    .prog-step {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 0;
+      position: relative;
+    }
+    .prog-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--border);
+      font-size: 14px;
+      z-index: 1;
+    }
+    .prog-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+    .prog-step.active .prog-num {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: white;
+    }
+    .prog-step.done .prog-num {
+      background: var(--verde);
+      border-color: var(--verde);
+      color: white;
+    }
+    .prog-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .prog-step.active .prog-label { color: var(--navy); font-weight: 600; }
+    .prog-step.done .prog-label { color: var(--verde); }
+
+    /* ══════════════════════════════════════
+       CONTAINER & LAYOUT
+    ══════════════════════════════════════ */
+    .page-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 36px 20px 60px;
+    }
+
+    /* ══════════════════════════════════════
+       SECTION CARDS
+    ══════════════════════════════════════ */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(216,226,240,0.6);
+      overflow: hidden;
+      margin-bottom: 20px;
+      transition: box-shadow 0.25s;
+    }
+    .card:hover { box-shadow: var(--shadow-lg); }
+
+    .card-header {
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, #fafcff 0%, white 100%);
+    }
+    .card-header-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .card-header-text {}
+    .card-header-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.1px;
+    }
+    .card-header-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+    .card-header-badge {
+      margin-left: auto;
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      color: rgba(255,255,255,0.85);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      font-family: 'DM Mono', monospace;
+      white-space: nowrap;
+    }
+    .card-body { padding: 24px 22px; }
+
+    /* ══════════════════════════════════════
+       INFO BOX
+    ══════════════════════════════════════ */
+    .info-box {
+      background: linear-gradient(90deg, #edf6fb, #f7fbfd);
+      border-left: 3px solid var(--celeste);
+      border-radius: 0 10px 10px 0;
+      padding: 11px 16px;
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .info-box strong { color: var(--navy); }
+
+    /* ══════════════════════════════════════
+       FIELDS
+    ══════════════════════════════════════ */
+    .field { margin-bottom: 18px; }
     .field:last-child { margin-bottom: 0; }
+
     label {
       display: block;
-      font-size: 11.5px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       color: var(--navy);
-      margin-bottom: 5px;
-      letter-spacing: 0.3px;
+      margin-bottom: 6px;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
     }
     label .req { color: var(--rojo); margin-left: 2px; }
 
-    input[type=text], input[type=date], input[type=email],
-    input[type=tel], input[type=number], input[type=time], select, textarea {
+    .input-wrap { position: relative; }
+    .input-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    input[type=text], input[type=email], select {
       width: 100%;
-      padding: 10px 14px;
+      padding: 11px 14px 11px 40px;
       border: 1.5px solid var(--border);
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 14px;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 400;
       background: var(--input-bg);
       color: var(--text);
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
       appearance: none;
       -webkit-appearance: none;
     }
-    input:focus, select:focus, textarea:focus {
+    input[type=text].no-icon, input[type=email].no-icon { padding-left: 14px; }
+    input:focus, select:focus {
       outline: none;
       border-color: var(--celeste);
-      box-shadow: 0 0 0 3px rgba(77,184,212,0.14);
+      box-shadow: 0 0 0 3px rgba(58,181,212,0.12);
       background: white;
     }
     select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7a90' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2364748b' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 14px center;
       padding-right: 36px;
     }
-    textarea { resize: vertical; min-height: 100px; }
 
-    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
-    /* ── TOGGLE SI/NO ── */
-    .toggle-group {
+    /* ══════════════════════════════════════
+       ART SELECTOR
+    ══════════════════════════════════════ */
+    #art_seleccionada { display: none; }
+
+    .art-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .art-option {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      background: var(--input-bg);
+      transition: all 0.22s;
       display: flex;
-      gap: 10px;
-    }
-    .toggle-btn {
-      flex: 1;
-      padding: 9px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      background: var(--input-bg);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .toggle-btn:hover { border-color: var(--celeste); color: var(--celeste); }
-    .toggle-btn.active-si  { background: #f0fdf4; border-color: var(--verde); color: var(--verde); }
-    .toggle-btn.active-no  { background: #fff5f5; border-color: #e0b0b0; color: #c0392b; }
-
-    /* ── CONDITIONAL FIELDS ── */
-    .conditional { overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s; }
-    .conditional.hidden { max-height: 0; opacity: 0; pointer-events: none; }
-    .conditional.visible { max-height: 1200px; opacity: 1; }
-
-    /* ── INFO BOX ── */
-    .info-box {
-      background: #f0f8fb;
-      border-left: 3px solid var(--celeste);
-      border-radius: 0 8px 8px 0;
-      padding: 10px 14px;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-    .info-box strong { color: var(--navy); }
-
-    /* ── WARNING BOX ── */
-    .warn-box {
-      background: #fff8f0;
-      border-left: 3px solid var(--naranja);
-      border-radius: 0 8px 8px 0;
-      padding: 10px 14px;
-      font-size: 12px;
-      color: #7a4a10;
-      margin-bottom: 16px;
-    }
-    .warn-box strong { color: var(--naranja); }
-
-    /* ── FILE UPLOAD ── */
-    .file-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .file-item label {
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 5px;
-      text-transform: none;
-      letter-spacing: 0;
-    }
-    .file-drop {
-      border: 1.5px dashed var(--border);
-      border-radius: 8px;
-      padding: 18px 10px;
-      text-align: center;
-      background: var(--input-bg);
-      cursor: pointer;
-      transition: all 0.2s;
+      flex-direction: column;
+      gap: 6px;
       position: relative;
       overflow: hidden;
     }
-    .file-drop:hover { border-color: var(--celeste); background: #f0f8fb; }
-    .file-drop input[type=file] {
-      position: absolute; inset: 0;
-      opacity: 0; cursor: pointer;
-      width: 100%; height: 100%;
-    }
-    .file-drop .icon { font-size: 24px; display: block; }
-    .file-drop .file-label { font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.4; }
-    .file-drop.has-file { border-color: var(--verde); background: #f0fdf4; }
-    .file-drop.has-file .file-label { color: var(--verde); font-weight: 600; }
-
-    /* ── CANVAS FIRMA ── */
-    .canvas-wrapper {
-      border: 2px dashed var(--border);
-      border-radius: 10px;
-      background: #fafbfc;
-      position: relative;
-      width: 100%;
-      height: 210px;
-      margin-bottom: 12px;
-    }
-    canvas {
-      display: block;
+    .art-option::before {
+      content: '';
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      cursor: crosshair;
-      touch-action: none;
-      border-radius: 10px;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(15,42,94,0.03), transparent);
+      opacity: 0;
+      transition: opacity 0.22s;
     }
-    .canvas-hint {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      color: #c0c8d8;
-      font-size: 13px;
-      pointer-events: none;
-      transition: opacity 0.3s;
-      text-align: center;
-    }
-
-    /* ── BUTTONS ── */
-    .btn-row { display: flex; gap: 10px; margin-top: 6px; }
-    .btn {
-      padding: 12px 24px;
-      border-radius: 9px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .btn-primary {
-      background: var(--navy);
-      color: white;
-      flex: 1;
-    }
-    .btn-primary:hover { background: #1e4d8c; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,58,107,0.25); }
-    .btn-secondary {
-      background: var(--card);
-      color: var(--navy);
-      border: 1.5px solid var(--border);
-    }
-    .btn-secondary:hover { border-color: var(--navy); }
-    .btn-danger {
-      background: #fff5f5;
-      color: var(--rojo);
-      border: 1.5px solid #f5c0be;
-      font-size: 12px;
-      padding: 8px 16px;
-    }
-    .btn-submit {
-      background: linear-gradient(135deg, #1e7a4a, var(--verde));
-      color: white;
-      flex: 1;
-      font-size: 15px;
-      padding: 14px;
-    }
-    .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(39,174,96,0.3); }
-    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-    /* ── SCREENS ── */
-    #screenOk, #screenError { display: none; }
-    .screen-card {
+    .art-option:hover {
+      border-color: var(--celeste);
       background: white;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 40px 30px;
-      text-align: center;
-      margin-top: 24px;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
-    .screen-icon { font-size: 56px; margin-bottom: 16px; }
-    .screen-card h2 { font-size: 20px; color: var(--navy); margin-bottom: 8px; }
-    .screen-card p  { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .art-option:hover::before { opacity: 1; }
+    .art-option.selected {
+      border-color: var(--navy);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(15,42,94,0.08), var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .art-option.selected::before { opacity: 1; }
 
-    /* ── DIVIDER ── */
-    .divider { height: 1px; background: var(--border); margin: 16px 0; }
-
-    /* ── ART BADGE ── */
-    .art-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, #e67e22, #f39c12);
-      color: white;
-      font-size: 10px;
+    .art-option-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .art-radio {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .art-option.selected .art-radio {
+      border-color: var(--navy);
+      background: var(--navy);
+    }
+    .art-option.selected .art-radio::after {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: white;
+    }
+    .art-name {
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 1px;
-      padding: 3px 10px;
-      border-radius: 20px;
-      margin-left: 8px;
-      vertical-align: middle;
+      color: var(--text);
+      line-height: 1.2;
     }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 480px) {
-      .row-2, .row-3, .file-grid { grid-template-columns: 1fr; }
-      .btn-row { flex-direction: column; }
-      .step-label { display: none; }
-    }
-
-    /* ── FOOTER ── */
-    .footer {
-      text-align: center;
-      padding: 20px;
+    .art-option.selected .art-name { color: var(--navy); }
+    .art-sub {
       font-size: 11px;
       color: var(--muted);
     }
-    .footer a { color: var(--celeste); text-decoration: none; }
+    .art-tag {
+      align-self: flex-start;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+    .tag-propio  {
+      background: #e0f0ff;
+      color: #1565c0;
+      border: 1px solid #b3d4f5;
+    }
+    .tag-propio::before { content: "Modelo propio"; }
+    .tag-especifico {
+      background: #fff3e0;
+      color: #e65100;
+      border: 1px solid #ffcc80;
+    }
+    .tag-especifico::before { content: "Modelo específico"; }
 
-    /* ── CAMPOS INVÁLIDOS ── */
+    .art-error {
+      color: var(--rojo);
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ══════════════════════════════════════
+       RESUMEN
+    ══════════════════════════════════════ */
+    .resumen-card {
+      background: white;
+      border: 2px solid var(--navy);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 20px;
+      display: none;
+      animation: slideUp 0.3s ease;
+      box-shadow: 0 0 0 4px rgba(15,42,94,0.06), var(--shadow-md);
+    }
+    .resumen-card.visible { display: block; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .resumen-header {
+      background: linear-gradient(90deg, var(--navy), var(--navy-light));
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .resumen-header-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .resumen-header-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .resumen-header-sub {
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 1px;
+    }
+    .resumen-body { padding: 0; }
+    .resumen-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 18px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .resumen-row:last-child { border-bottom: none; }
+    .resumen-key {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .resumen-val {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      text-align: right;
+      word-break: break-word;
+    }
+    .resumen-val.highlight {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    /* ══════════════════════════════════════
+       SUBMIT BUTTON
+    ══════════════════════════════════════ */
+    .submit-wrap {
+      position: relative;
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 16px 28px;
+      border-radius: 12px;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: white;
+      box-shadow: 0 4px 20px rgba(15,42,94,0.30);
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(15,42,94,0.35);
+      background: linear-gradient(135deg, #0d2550 0%, #1a4080 100%);
+    }
+    .btn-submit:active:not(:disabled) { transform: translateY(0); }
+    .btn-submit:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-submit-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .btn-submit-label {}
+    .btn-submit-label small {
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.55);
+      margin-top: 1px;
+    }
+
+    /* ══════════════════════════════════════
+       RESULT SCREENS
+    ══════════════════════════════════════ */
+    #screenOk, #screenError { display: none; }
+    .screen-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 48px 32px;
+      text-align: center;
+      margin-top: 28px;
+      border: 1px solid var(--border);
+    }
+    .screen-icon-wrap {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+    }
+    .screen-icon-ok   { background: linear-gradient(135deg, #d4f5e9, #a8edce); }
+    .screen-icon-err  { background: linear-gradient(135deg, #fde8d8, #fbc5a0); }
+    .screen-card h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+    .screen-card p  { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .screen-detail {
+      margin-top: 20px;
+      background: #f4f8ff;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: left;
+      border: 1px solid #dce8fa;
+      line-height: 1.8;
+    }
+    .screen-detail strong { color: var(--navy); }
+    .btn-retry {
+      margin: 20px auto 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-retry:hover { background: var(--navy-light); transform: translateY(-1px); }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .footer {
+      background: var(--navy);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .footer-logo {
+      height: 28px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      opacity: 0.6;
+      margin-bottom: 8px;
+    }
+    .footer-text {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.3px;
+    }
+    .footer-text strong { color: rgba(255,255,255,0.6); font-weight: 600; }
+
+    /* ══════════════════════════════════════
+       ERROR STATES
+    ══════════════════════════════════════ */
     .field-error input,
-    .field-error select,
-    .field-error textarea {
+    .field-error select {
       border-color: var(--rojo) !important;
       background: #fff5f5 !important;
-      box-shadow: 0 0 0 3px rgba(230,51,41,0.12);
+      box-shadow: 0 0 0 3px rgba(214,48,49,0.10) !important;
     }
     .field-error-msg {
       color: var(--rojo);
-      font-size: 11px;
-      margin-top: 4px;
+      font-size: 11.5px;
+      margin-top: 5px;
       font-weight: 600;
       display: flex;
       align-items: center;
       gap: 4px;
     }
+
+    /* ══════════════════════════════════════
+       DIVIDER
+    ══════════════════════════════════════ */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 540px) {
+      .navbar { padding: 0 16px; }
+      .navbar-badge { display: none; }
+      .hero { padding: 38px 18px 46px; }
+      .page-wrap { padding: 24px 14px 50px; }
+      .card-body { padding: 18px 16px; }
+      .card-header { padding: 14px 16px; }
+      .row-2 { grid-template-columns: 1fr; }
+      .art-grid { grid-template-columns: 1fr; }
+      .progress-strip { padding: 0 16px; }
+      .prog-label { display: none; }
+      .prog-step:not(:last-child)::after { display: none; }
+      .resumen-row { flex-direction: column; align-items: flex-start; gap: 2px; }
+      .resumen-val { text-align: left; }
+      .btn-submit { font-size: 14px; padding: 15px 20px; }
+    }
+
+    @media (max-width: 380px) {
+      .hero h1 { font-size: 20px; }
+      .card-header-badge { display: none; }
+    }
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <img src="https://iezzivarone.com/assets/36_anios_compB-f0098160.png" alt="Iezzi & Varone" onerror="this.style.display='none'">
-  <div class="header-sub">Formulario ART — Denuncia de Accidente Laboral</div>
-</div>
+<!-- ══════════════════════════════════════
+     WEBHOOK URL — REEMPLAZAR ANTES DE DEPLOY
+══════════════════════════════════════ -->
+<script>
+  const WEBHOOK_URL = "URL_TUNEL_PEGA_AQUI";
+</script>
 
-<!-- HERO -->
-<div class="hero">
-  <h1>Denuncia ART <span class="art-badge">EMPLEADOR</span></h1>
-  <p>Completá el formulario paso a paso. La información es confidencial y segura.</p>
-</div>
+<!-- ── NAVBAR ── -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <img
+      src="https://iezzivarone.com/assets/36_anios_compB-f0098160.png"
+      alt="Iezzi & Varone"
+      onerror="this.style.display='none'"
+    >
+    <div class="navbar-title">
+      Iezzi &amp; Varone
+      <span>Sistema de Gestión ART</span>
+    </div>
+  </div>
+  <div class="navbar-badge">Uso Interno</div>
+</nav>
 
-<!-- STEPS -->
-<div class="progress-wrap">
-  <div class="steps">
-    <div class="step active" id="step-1" onclick="goToStep(1)">
-      <div class="step-circle">1</div>
-      <div class="step-label">Empleado</div>
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Sistema ART activo</div>
+    <h1>Apertura de <span class="accent">Caso ART</span></h1>
+    <p>Completá los datos del siniestro para crear la carpeta en Drive, registrar en el sistema y enviar los formularios al empleado y empleador automáticamente.</p>
+  </div>
+</section>
+
+<!-- ── PROGRESS STRIP ── -->
+<div class="progress-strip">
+  <div class="progress-inner">
+    <div class="prog-step active">
+      <div class="prog-num">1</div>
+      <div class="prog-label">Siniestro</div>
     </div>
-    <div class="step-line"></div>
-    <div class="step" id="step-2" onclick="goToStep(2)">
-      <div class="step-circle">2</div>
-      <div class="step-label">Accidente</div>
+    <div class="prog-step active">
+      <div class="prog-num">2</div>
+      <div class="prog-label">Contacto</div>
     </div>
-    <div class="step-line"></div>
-    <div class="step" id="step-3" onclick="goToStep(3)">
-      <div class="step-circle">3</div>
-      <div class="step-label">Tercero</div>
+    <div class="prog-step active">
+      <div class="prog-num">3</div>
+      <div class="prog-label">ART</div>
     </div>
-    <div class="step-line"></div>
-    <div class="step" id="step-4" onclick="goToStep(4)">
-      <div class="step-circle">4</div>
-      <div class="step-label">Documentos</div>
-    </div>
-    <div class="step-line"></div>
-    <div class="step" id="step-5" onclick="goToStep(5)">
-      <div class="step-circle">5</div>
-      <div class="step-label">Firma</div>
+    <div class="prog-step">
+      <div class="prog-num">✓</div>
+      <div class="prog-label">Confirmar</div>
     </div>
   </div>
 </div>
 
-<div class="container">
+<!-- ── PAGE CONTENT ── -->
+<div class="page-wrap">
 
-  <!-- ══════════════════════════════════════════════
-       PASO 1 – DATOS DEL EMPLEADO Y PUESTO
-  ══════════════════════════════════════════════ -->
-  <div class="section active" id="sec-1">
-
-    <div class="section-card">
-      <div class="section-title">🏢 Datos del Empleado <span class="badge">PASO 1 / 5</span></div>
-      <div class="section-body">
-
-        <div class="info-box">
-          <strong>Formulario ART.</strong> Completá los datos del empleado accidentado y su situación laboral al momento del hecho.
-        </div>
-
-        <div class="field">
-          <label>Nombre y Apellido del Empleado <span class="req">*</span></label>
-          <input type="text" id="empleado_nombre" placeholder="Apellido, Nombre completo" maxlength="50">
-        </div>
-
-        <div class="row-2">
-          <div class="field">
-            <label>DNI del Empleado <span class="req">*</span></label>
-            <input type="text" id="empleado_dni" placeholder="Sin puntos" maxlength="8" inputmode="numeric">
-          </div>
-          <div class="field">
-            <label>CUIL</label>
-            <input type="text" id="empleado_cuil" placeholder="20-12345678-9" maxlength="13">
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="field">
-          <label>Domicilio Laboral del Empleado <span class="req">*</span></label>
-          <input type="text" id="domicilio_laboral" placeholder="Calle, número, piso, depto, localidad" maxlength="80">
-        </div>
-
-        <div class="field">
-          <label>Puesto / Cargo Laboral <span class="req">*</span></label>
-          <input type="text" id="puesto_laboral" placeholder="Ej: Operario de producción, Repositor, Chofer, etc." maxlength="60">
-        </div>
-
-        <div class="field">
-          <label>Jornada de Trabajo <span class="req">*</span></label>
-          <select id="jornada_trabajo">
-            <option value="">Seleccionar tipo de jornada</option>
-            <option>Jornada completa (8 hs diarias)</option>
-            <option>Media jornada (4 hs diarias)</option>
-            <option>Jornada nocturna</option>
-            <option>Jornada por turnos rotativos</option>
-            <option>Jornada reducida</option>
-            <option>Jornada por convenio colectivo</option>
-            <option>Otra</option>
-          </select>
-        </div>
-
-        <div class="row-2">
-          <div class="field">
-            <label>Horario de entrada</label>
-            <input type="time" id="horario_entrada">
-          </div>
-          <div class="field">
-            <label>Horario de salida</label>
-            <input type="time" id="horario_salida">
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Descripción adicional de jornada</label>
-          <input type="text" id="jornada_descripcion" placeholder="Aclaración sobre días, turnos u otras particularidades" maxlength="80">
-        </div>
-
+  <!-- ═══════════════════════════
+       CARD 1 — DATOS DEL SINIESTRO
+  ═══════════════════════════ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-icon">📁</div>
+      <div class="card-header-text">
+        <div class="card-header-title">Datos del Siniestro</div>
+        <div class="card-header-sub">Información básica del caso a abrir</div>
       </div>
+      <div class="card-header-badge">Paso 1 / 3</div>
     </div>
+    <div class="card-body">
 
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="nextStep(1)">Continuar →</button>
+      <div class="info-box">
+        <strong>Formulario de apertura.</strong> Completá los datos para generar la carpeta en Drive y registrar el caso en el control de gestión.
+      </div>
+
+      <div class="field">
+        <label>N° de Siniestro <span class="req">*</span></label>
+        <div class="input-wrap">
+          <span class="input-icon">#</span>
+          <input type="text" id="nro_siniestro" placeholder="Ej: 2024-00123" maxlength="30" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label>Nombre del Empleado <span class="req">*</span></label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" id="empleado_nombre" placeholder="Apellido, Nombre" maxlength="60">
+          </div>
+        </div>
+        <div class="field">
+          <label>Empresa / Empleador <span class="req">*</span></label>
+          <div class="input-wrap">
+            <span class="input-icon">🏢</span>
+            <input type="text" id="empleador_nombre" placeholder="Razón social o nombre" maxlength="60">
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
-
-  <!-- ══════════════════════════════════════════════
-       PASO 2 – EL ACCIDENTE
-  ══════════════════════════════════════════════ -->
-  <div class="section" id="sec-2">
-
-    <div class="section-card">
-      <div class="section-title">📋 Conocimiento del Hecho <span class="badge">PASO 2 / 5</span></div>
-      <div class="section-body">
-
-        <div class="row-2">
-          <div class="field">
-            <label>Fecha en que tomó conocimiento <span class="req">*</span></label>
-            <input type="date" id="fecha_conocimiento">
-          </div>
-          <div class="field">
-            <label>Hora aproximada</label>
-            <input type="time" id="hora_conocimiento">
-          </div>
-        </div>
-
-        <div class="field">
-          <label>¿Cómo tomó conocimiento del hecho? <span class="req">*</span></label>
-          <select id="como_conocimiento">
-            <option value="">Seleccionar forma</option>
-            <option>Comunicación directa del empleado</option>
-            <option>Aviso de un compañero de trabajo</option>
-            <option>Llamado telefónico de familiar del empleado</option>
-            <option>Llamado del establecimiento de salud</option>
-            <option>Intervención policial / judicial</option>
-            <option>Aviso de un supervisor o responsable de área</option>
-            <option>Presencié el hecho personalmente</option>
-            <option>Otro medio</option>
-          </select>
-        </div>
-
-        <div class="field" id="campo_otro_conocimiento" style="display:none;">
-          <label>Especificar cómo tomó conocimiento</label>
-          <input type="text" id="otro_conocimiento_texto" placeholder="Describir brevemente" maxlength="100">
-        </div>
-
+  <!-- ═══════════════════════════
+       CARD 2 — CONTACTO
+  ═══════════════════════════ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-icon">✉️</div>
+      <div class="card-header-text">
+        <div class="card-header-title">Contacto para Formularios</div>
+        <div class="card-header-sub">Se enviarán los links automáticamente a estos mails</div>
       </div>
+      <div class="card-header-badge">Paso 2 / 3</div>
     </div>
+    <div class="card-body">
 
-    <div class="section-card">
-      <div class="section-title">⚠️ Descripción del Accidente</div>
-      <div class="section-body">
-
-        <div class="warn-box">
-          <strong>Importante:</strong> Describí con el mayor detalle posible cómo ocurrió el accidente, las circunstancias, el lugar exacto dentro del establecimiento o en la vía pública, y las lesiones sufridas por el empleado.
-        </div>
-
-        <div class="field">
-          <label>Descripción detallada del accidente <span class="req">*</span></label>
-          <textarea id="descripcion_accidente" placeholder="Describir: qué estaba haciendo el empleado, cómo ocurrió el accidente, qué parte del cuerpo resultó afectada, si requirió atención médica inmediata, etc." style="min-height:140px;"></textarea>
-        </div>
-
-        <div class="row-2">
-          <div class="field">
-            <label>Fecha del accidente <span class="req">*</span></label>
-            <input type="date" id="fecha_accidente">
-          </div>
-          <div class="field">
-            <label>Hora del accidente</label>
-            <input type="time" id="hora_accidente">
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Lugar donde ocurrió el accidente</label>
-          <input type="text" id="lugar_accidente" placeholder="Ej: planta de producción, depósito, vía pública, etc." maxlength="80">
-        </div>
-
+      <div class="info-box">
+        <strong>Mails de destino.</strong> A estas direcciones se enviarán los links a los formularios de ampliación de denuncia ART.
       </div>
-    </div>
 
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="prevStep(2)">← Atrás</button>
-      <button class="btn btn-primary" onclick="nextStep(2)">Continuar →</button>
+      <div class="row-2">
+        <div class="field">
+          <label>Mail del Empleado <span class="req">*</span></label>
+          <div class="input-wrap">
+            <span class="input-icon">@</span>
+            <input type="email" id="mail_empleado" placeholder="empleado@mail.com" maxlength="80">
+          </div>
+        </div>
+        <div class="field">
+          <label>Mail del Empleador <span class="req">*</span></label>
+          <div class="input-wrap">
+            <span class="input-icon">@</span>
+            <input type="email" id="mail_empleador" placeholder="empresa@mail.com" maxlength="80">
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
+  <!-- ═══════════════════════════
+       CARD 3 — ART
+  ═══════════════════════════ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-icon">🏥</div>
+      <div class="card-header-text">
+        <div class="card-header-title">ART Interviniente</div>
+        <div class="card-header-sub">Define el template de informe a utilizar</div>
+      </div>
+      <div class="card-header-badge">Paso 3 / 3</div>
+    </div>
+    <div class="card-body">
 
-  <!-- ══════════════════════════════════════════════
-       PASO 3 – INTERVENCIÓN DE TERCERO
-  ══════════════════════════════════════════════ -->
-  <div class="section" id="sec-3">
+      <div class="info-box">
+        <strong>Seleccioná la ART del caso.</strong> Provincia ART, La Segunda y Prevención ART tienen modelo específico. El resto usa el modelo propio del estudio.
+      </div>
 
-    <div class="section-card">
-      <div class="section-title">🚗 Intervención de Tercero <span class="badge">PASO 3 / 5</span></div>
-      <div class="section-body">
+      <input type="hidden" id="art_seleccionada">
 
-        <div class="field">
-          <label>¿Hubo intervención de un tercero en el accidente? <span class="req">*</span></label>
-          <div class="toggle-group">
-            <button class="toggle-btn" id="btn-tercero-si" onclick="toggleTercero('si')">✅ Sí</button>
-            <button class="toggle-btn" id="btn-tercero-no" onclick="toggleTercero('no')">❌ No</button>
+      <div class="art-grid">
+
+        <div class="art-option" onclick="selectArt(this, 'Provincia ART')">
+          <div class="art-option-top">
+            <div class="art-radio"></div>
+            <div class="art-name">Provincia ART</div>
           </div>
-          <input type="hidden" id="hubo_tercero" value="">
+          <div class="art-sub">Provincia Seguros</div>
+          <span class="art-tag tag-especifico"></span>
         </div>
 
-        <div class="conditional hidden" id="tercero-fields">
-          <div class="divider"></div>
-
-          <div class="info-box">
-            <strong>Datos del tercero involucrado.</strong> Completá los datos de la persona y/o vehículo que intervino en el accidente.
+        <div class="art-option" onclick="selectArt(this, 'La Segunda ART')">
+          <div class="art-option-top">
+            <div class="art-radio"></div>
+            <div class="art-name">La Segunda ART</div>
           </div>
-
-          <div class="field">
-            <label>Nombre y Apellido del tercero <span class="req">*</span></label>
-            <input type="text" id="tercero_nombre" placeholder="Apellido, Nombre" maxlength="50">
-          </div>
-
-          <div class="row-2">
-            <div class="field">
-              <label>DNI del tercero</label>
-              <input type="text" id="tercero_dni" placeholder="Sin puntos" maxlength="8" inputmode="numeric">
-            </div>
-            <div class="field">
-              <label>Teléfono de contacto</label>
-              <input type="tel" id="tercero_telefono" placeholder="11 XXXX-XXXX" maxlength="15">
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Domicilio del tercero</label>
-            <input type="text" id="tercero_domicilio" placeholder="Calle, número, localidad" maxlength="80">
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="section-title" style="background: linear-gradient(90deg,#2c3e50,#34495e); border-radius:8px; margin-bottom:14px; font-size:12px;">
-            🚘 Datos del Rodado / Vehículo que embistió al Empleado
-          </div>
-
-          <div class="row-3">
-            <div class="field">
-              <label>Patente / Dominio <span class="req">*</span></label>
-              <input type="text" id="rodado_dominio" placeholder="ABC123" style="text-transform:uppercase" maxlength="8">
-            </div>
-            <div class="field">
-              <label>Marca</label>
-              <input type="text" id="rodado_marca" placeholder="Ej: Ford" maxlength="20">
-            </div>
-            <div class="field">
-              <label>Modelo</label>
-              <input type="text" id="rodado_modelo" placeholder="Ej: Focus" maxlength="20">
-            </div>
-          </div>
-
-          <div class="row-3">
-            <div class="field">
-              <label>Año del vehículo</label>
-              <input type="text" id="rodado_anio" placeholder="2018" maxlength="4" inputmode="numeric">
-            </div>
-            <div class="field">
-              <label>Color</label>
-              <input type="text" id="rodado_color" placeholder="Ej: Blanco" maxlength="15">
-            </div>
-            <div class="field">
-              <label>Tipo de vehículo</label>
-              <select id="rodado_tipo">
-                <option value="">Seleccionar</option>
-                <option>Automóvil</option>
-                <option>Camioneta</option>
-                <option>Camión</option>
-                <option>Moto / Ciclomotor</option>
-                <option>Colectivo / Ómnibus</option>
-                <option>Bicicleta</option>
-                <option>Otro</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row-2">
-            <div class="field">
-              <label>Aseguradora del tercero</label>
-              <input type="text" id="tercero_aseguradora" placeholder="Nombre de la aseguradora" maxlength="40">
-            </div>
-            <div class="field">
-              <label>N° de póliza del tercero</label>
-              <input type="text" id="tercero_poliza" placeholder="Número de póliza" maxlength="20">
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Observaciones adicionales sobre el tercero</label>
-            <textarea id="tercero_observaciones" placeholder="Cualquier información adicional relevante sobre el tercero o el rodado..." style="min-height:80px;"></textarea>
-          </div>
+          <div class="art-sub">La Segunda Seguros</div>
+          <span class="art-tag tag-especifico"></span>
         </div>
 
-        <!-- Sin tercero -->
-        <div class="conditional hidden" id="sin-tercero-msg">
-          <div class="divider"></div>
-          <div class="info-box">
-            <strong>Sin intervención de terceros.</strong> El accidente ocurrió sin la participación de personas o vehículos externos. Continuá al siguiente paso.
+        <div class="art-option" onclick="selectArt(this, 'Prevención ART')">
+          <div class="art-option-top">
+            <div class="art-radio"></div>
+            <div class="art-name">Prevención ART</div>
           </div>
+          <div class="art-sub">Prevención Seguros</div>
+          <span class="art-tag tag-especifico"></span>
+        </div>
+
+        <div class="art-option" onclick="selectArt(this, 'Otra ART')">
+          <div class="art-option-top">
+            <div class="art-radio"></div>
+            <div class="art-name">Otra ART</div>
+          </div>
+          <div class="art-sub">Resto de aseguradoras</div>
+          <span class="art-tag tag-propio"></span>
         </div>
 
       </div>
-    </div>
+      <div class="art-error" id="art-error">⚠️ Seleccioná una ART antes de continuar.</div>
 
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="prevStep(3)">← Atrás</button>
-      <button class="btn btn-primary" onclick="nextStep(3)">Continuar →</button>
     </div>
   </div>
 
-
-  <!-- ══════════════════════════════════════════════
-       PASO 4 – DOCUMENTACIÓN
-  ══════════════════════════════════════════════ -->
-  <div class="section" id="sec-4">
-
-    <div class="section-card">
-      <div class="section-title">📎 Documentación Requerida <span class="badge">PASO 4 / 5</span></div>
-      <div class="section-body">
-
-        <div class="info-box">
-          <strong>Adjuntá la documentación solicitada.</strong> Fotografiá o escaneá cada documento. Formatos aceptados: JPG, PNG, PDF.
-        </div>
-
-        <!-- DNI empleado -->
-        <div class="field">
-          <label>📇 Copia del DNI del Empleado — Frente y Dorso <span class="req">*</span></label>
-          <div class="file-grid">
-            <div class="file-item">
-              <div class="file-drop" id="drop-dni-frente">
-                <span class="icon">🪪</span>
-                <div class="file-label">DNI Frente<br><small>Tocar para adjuntar</small></div>
-                <input type="file" id="dni_empleado_frente" accept="image/*,application/pdf" onchange="markFile(this,'drop-dni-frente','DNI Frente ✓')">
-              </div>
-            </div>
-            <div class="file-item">
-              <div class="file-drop" id="drop-dni-dorso">
-                <span class="icon">🪪</span>
-                <div class="file-label">DNI Dorso<br><small>Tocar para adjuntar</small></div>
-                <input type="file" id="dni_empleado_dorso" accept="image/*,application/pdf" onchange="markFile(this,'drop-dni-dorso','DNI Dorso ✓')">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Denuncia policial -->
-        <div class="field">
-          <label>🚔 Copia de Denuncia Policial</label>
-          <div class="info-box" style="margin-bottom:10px;">
-            Adjuntá la copia de la denuncia policial <strong>si se realizó una</strong>. En caso contrario, dejá este campo vacío y continuá.
-          </div>
-          <div class="file-drop" id="drop-denuncia" style="max-width:340px;">
-            <span class="icon">📄</span>
-            <div class="file-label">Denuncia policial (si hubiere)<br><small>Tocar para adjuntar</small></div>
-            <input type="file" id="denuncia_policial" accept="image/*,application/pdf" onchange="markFile(this,'drop-denuncia','Denuncia adjuntada ✓')">
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Alta temprana / Recibo de sueldo -->
-        <div class="field">
-          <label>📋 Documentación Laboral Adicional</label>
-          <div class="info-box" style="margin-bottom:10px;">
-            Adjuntá el <strong>Alta Temprana</strong> del empleado o, en su defecto, el <strong>último Recibo de Sueldo</strong>. Estos documentos pueden ser requeridos por la ART para acreditar la relación laboral.
-          </div>
-        
-          </div>
-          <div class="file-grid">
-            <div class="file-item">
-              <div class="file-drop" id="drop-alta-temprana">
-                <span class="icon">📑</span>
-                <div class="file-label">Alta Temprana (ARCA)<br><small>Tocar para adjuntar</small></div>
-                <input type="file" id="alta_temprana" accept="image/*,application/pdf" onchange="markFile(this,'drop-alta-temprana','Alta Temprana ✓')">
-              </div>
-            </div>
-            <div class="file-item">
-              <div class="file-drop" id="drop-recibo-sueldo">
-                <span class="icon">💵</span>
-                <div class="file-label">Recibo de Sueldo<br><small>Tocar para adjuntar</small></div>
-                <input type="file" id="recibo_sueldo" accept="image/*,application/pdf" onchange="markFile(this,'drop-recibo-sueldo','Recibo de Sueldo ✓')">
-              </div>
-            </div>
-          </div>
-        </div>
-
+  <!-- ═══════════════════════════
+       RESUMEN DE CONFIRMACIÓN
+  ═══════════════════════════ -->
+  <div class="resumen-card" id="resumen">
+    <div class="resumen-header">
+      <div class="resumen-header-icon">🔍</div>
+      <div>
+        <div class="resumen-header-title">Resumen del caso</div>
+        <div class="resumen-header-sub">Revisá los datos antes de abrir el caso</div>
       </div>
     </div>
-
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="prevStep(4)">← Atrás</button>
-      <button class="btn btn-primary" onclick="nextStep(4)">Continuar →</button>
-    </div>
-  </div>
-
-
-  <!-- ══════════════════════════════════════════════
-       PASO 5 – FIRMA DEL EMPLEADOR
-  ══════════════════════════════════════════════ -->
-  <div class="section" id="sec-5">
-
-    <div class="section-card">
-      <div class="section-title">✍️ Firma del Empleador <span class="badge">PASO 5 / 5</span></div>
-      <div class="section-body">
-
-        <div class="info-box">
-          <strong>Declaración del empleador.</strong> Al firmar, confirmás que la información declarada es verídica y completa.
-        </div>
-
-        <div class="field">
-          <label>Nombre y Apellido del firmante (Empleador / Representante) <span class="req">*</span></label>
-          <input type="text" id="firmante_nombre" placeholder="Nombre completo del representante" maxlength="50">
-        </div>
-
-        <div class="row-2">
-          <div class="field">
-            <label>DNI del firmante <span class="req">*</span></label>
-            <input type="text" id="firmante_dni" placeholder="Sin puntos" maxlength="8" inputmode="numeric">
-          </div>
-          <div class="field">
-            <label>Cargo / Función</label>
-            <input type="text" id="firmante_cargo" placeholder="Ej: Gerente, Dueño, RRHH" maxlength="30">
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Razón social / Empresa</label>
-          <input type="text" id="empresa_razon_social" placeholder="Nombre de la empresa empleadora" maxlength="60">
-        </div>
-
-        <div class="divider"></div>
-
-        <label>Firma digital <span class="req">*</span></label>
-        <div class="canvas-wrapper" id="wrapper">
-          <canvas id="canvas"></canvas>
-          <div class="canvas-hint" id="hint">✍️ Dibujá tu firma aquí</div>
-        </div>
-        <button class="btn btn-danger" onclick="limpiarFirma()">🗑 Borrar firma</button>
-
+    <div class="resumen-body">
+      <div class="resumen-row">
+        <span class="resumen-key">N° Siniestro</span>
+        <span class="resumen-val highlight" id="r-siniestro">—</span>
+      </div>
+      <div class="resumen-row">
+        <span class="resumen-key">Empleado</span>
+        <span class="resumen-val" id="r-empleado">—</span>
+      </div>
+      <div class="resumen-row">
+        <span class="resumen-key">Empleador</span>
+        <span class="resumen-val" id="r-empleador">—</span>
+      </div>
+      <div class="resumen-row">
+        <span class="resumen-key">Mail empleado</span>
+        <span class="resumen-val" id="r-mail-empleado">—</span>
+      </div>
+      <div class="resumen-row">
+        <span class="resumen-key">Mail empleador</span>
+        <span class="resumen-val" id="r-mail-empleador">—</span>
+      </div>
+      <div class="resumen-row">
+        <span class="resumen-key">ART</span>
+        <span class="resumen-val highlight" id="r-art">—</span>
+      </div>
+      <div class="resumen-row">
+        <span class="resumen-key">Template informe</span>
+        <span class="resumen-val" id="r-template">—</span>
       </div>
     </div>
-
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="prevStep(5)">← Atrás</button>
-      <button class="btn btn-submit" id="btnSubmit" onclick="enviarFormulario()">✅ Enviar Denuncia ART</button>
-    </div>
   </div>
 
-  <!-- ── PANTALLAS DE RESULTADO ── -->
+  <!-- ═══════════════════════════
+       BOTÓN ENVÍO
+  ═══════════════════════════ -->
+  <div class="submit-wrap">
+    <button class="btn-submit" id="btnSubmit" onclick="enviarFormulario()">
+      <div class="btn-submit-icon">🚀</div>
+      <div class="btn-submit-label">
+        Abrir caso y enviar formularios
+        <small>Se notificará al empleado y empleador</small>
+      </div>
+    </button>
+  </div>
+
+  <!-- ─── PANTALLA ÉXITO ─── -->
   <div id="screenOk">
     <div class="screen-card">
-      <div class="screen-icon">✅</div>
-      <h2>Denuncia enviada exitosamente</h2>
-      <p>La denuncia ART fue recibida. Nuestro equipo se pondrá en contacto a la brevedad para confirmar la recepción y próximos pasos.</p>
+      <div class="screen-icon-wrap screen-icon-ok">✅</div>
+      <h2>Caso abierto exitosamente</h2>
+      <p>Se registró el caso en el sistema, se creó la carpeta en Drive y se enviaron los formularios al empleado y empleador.</p>
+      <div class="screen-detail" id="screenOkDetail"></div>
       <br>
       <p style="font-size:12px; color:#aaa;">Iezzi & Varone — Abogados Penalistas de Empresas</p>
     </div>
   </div>
 
+  <!-- ─── PANTALLA ERROR ─── -->
   <div id="screenError">
     <div class="screen-card">
-      <div class="screen-icon">⚠️</div>
-      <h2>Error al enviar</h2>
-      <p>Ocurrió un inconveniente al procesar la denuncia. Por favor intentá nuevamente o comunicate con nuestro estudio.</p>
-      <br>
-      <button class="btn btn-secondary" onclick="resetError()">Reintentar</button>
+      <div class="screen-icon-wrap screen-icon-err">⚠️</div>
+      <h2>Error al abrir el caso</h2>
+      <p>No se pudo conectar con el servidor. Verificá tu conexión e intentá nuevamente.</p>
+      <button class="btn-retry" onclick="resetError()">↩ Reintentar</button>
     </div>
   </div>
 
 </div>
 
-<!-- FOOTER -->
-<div class="footer">
-  <strong>Iezzi & Varone</strong> — Abogados Penalistas de Empresas<br>
-  <a href="https://www.iezzivarone.com" target="_blank">www.iezzivarone.com</a> · Asistencia Garantizada las 24 hs.
-</div>
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <img
+    src="https://iezzivarone.com/assets/36_anios_compB-f0098160.png"
+    alt="Iezzi & Varone"
+    class="footer-logo"
+    onerror="this.style.display='none'"
+  >
+  <div class="footer-text">
+    <strong>Iezzi &amp; Varone</strong> — Abogados Penalistas de Empresas · Sistema Interno ART
+  </div>
+</footer>
 
 <script>
-  const WEBHOOK_URL = "https://hook.us1.make.com/TU_WEBHOOK_ART_AQUI";
+  // ── Selección de ART ──
+  function selectArt(el, nombre) {
+    document.querySelectorAll(".art-option").forEach(o => o.classList.remove("selected"));
+    el.classList.add("selected");
+    document.getElementById("art_seleccionada").value = nombre;
+    document.getElementById("art-error").style.display = "none";
+    actualizarResumen();
+  }
 
-  // ── Pasos ──
-  let currentStep = 1;
-  const TOTAL_STEPS = 5;
+  // ── Template según ART ──
+  function templateDeArt(art) {
+    const especificos = ["Provincia ART", "La Segunda ART", "Prevención ART"];
+    return especificos.includes(art)
+      ? "Modelo específico — " + art
+      : "Modelo propio del estudio";
+  }
 
-  function goToStep(n) {
-    if (n < 1 || n > TOTAL_STEPS) return;
-    document.getElementById("sec-" + currentStep).classList.remove("active");
-    document.getElementById("step-" + currentStep).classList.remove("active");
-    if (n > currentStep) {
-      document.getElementById("step-" + currentStep).classList.add("done");
+  // ── Resumen en tiempo real ──
+  function actualizarResumen() {
+    const g   = id => document.getElementById(id)?.value?.trim() || "";
+    const art = g("art_seleccionada");
+
+    const campos = {
+      "r-siniestro":     g("nro_siniestro")     || "—",
+      "r-empleado":      g("empleado_nombre")   || "—",
+      "r-empleador":     g("empleador_nombre")  || "—",
+      "r-mail-empleado": g("mail_empleado")     || "—",
+      "r-mail-empleador":g("mail_empleador")    || "—",
+      "r-art":           art                    || "—",
+      "r-template":      art ? templateDeArt(art) : "—",
+    };
+
+    const todosCompletos = Object.values(campos).every(v => v !== "—");
+    const resumen = document.getElementById("resumen");
+
+    if (todosCompletos) {
+      resumen.classList.add("visible");
+      Object.entries(campos).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      });
+      // Marcar paso 4 como activo en progress
+      document.querySelectorAll(".prog-step")[3]?.classList.add("active");
     } else {
-      document.getElementById("step-" + (n + 1))?.classList.remove("done");
+      resumen.classList.remove("visible");
+      document.querySelectorAll(".prog-step")[3]?.classList.remove("active");
     }
-    currentStep = n;
-    document.getElementById("sec-" + currentStep).classList.add("active");
-    document.getElementById("step-" + currentStep).classList.remove("done");
-    document.getElementById("step-" + currentStep).classList.add("active");
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function nextStep(n) {
-    if (!validateStep(n)) return;
-    goToStep(n + 1);
-  }
-  function prevStep(n) { goToStep(n - 1); }
+  // Listeners en tiempo real
+  ["nro_siniestro","empleado_nombre","empleador_nombre","mail_empleado","mail_empleador"]
+    .forEach(id => document.getElementById(id)?.addEventListener("input", actualizarResumen));
 
   // ── Validación ──
-  function validateStep(n) {
+  function validar() {
     clearErrors();
-    let valid = true;
-
-    if (n === 1) {
-      valid &= require("empleado_nombre", "Ingresá el nombre del empleado");
-      valid &= require("empleado_dni", "Ingresá el DNI del empleado");
-      valid &= require("domicilio_laboral", "Ingresá el domicilio laboral");
-      valid &= require("puesto_laboral", "Ingresá el puesto laboral");
-      valid &= requireSelect("jornada_trabajo", "Seleccioná la jornada de trabajo");
+    let ok = true;
+    ok = require("nro_siniestro",    "Ingresá el número de siniestro")             && ok;
+    ok = require("empleado_nombre",  "Ingresá el nombre del empleado")             && ok;
+    ok = require("empleador_nombre", "Ingresá el nombre del empleador / empresa")  && ok;
+    ok = requireEmail("mail_empleado",  "Ingresá un mail válido para el empleado") && ok;
+    ok = requireEmail("mail_empleador", "Ingresá un mail válido para el empleador")&& ok;
+    if (!document.getElementById("art_seleccionada").value) {
+      const err = document.getElementById("art-error");
+      err.style.display = "flex";
+      ok = false;
     }
-    if (n === 2) {
-      valid &= require("fecha_conocimiento", "Indicá la fecha en que se tomó conocimiento");
-      valid &= requireSelect("como_conocimiento", "Indicá cómo se tomó conocimiento del hecho");
-      valid &= require("descripcion_accidente", "Describí el accidente con detalle");
-      valid &= require("fecha_accidente", "Indicá la fecha del accidente");
-    }
-    if (n === 3) {
-      const hubo = document.getElementById("hubo_tercero").value;
-      if (!hubo) {
-        markError("hubo_tercero_wrap", "Indicá si hubo intervención de un tercero");
-        valid = false;
-      }
-      if (hubo === "si") {
-        valid &= require("tercero_nombre", "Ingresá el nombre del tercero");
-        valid &= require("rodado_dominio", "Ingresá la patente del vehículo");
-      }
-    }
-    if (n === 4) {
-      if (!document.getElementById("dni_empleado_frente").files.length) {
-        alert("Por favor adjuntá el frente del DNI del empleado."); valid = false;
-      }
-      if (!document.getElementById("dni_empleado_dorso").files.length) {
-        alert("Por favor adjuntá el dorso del DNI del empleado."); valid = false;
-      }
-    }
-    if (n === 5) {
-      valid &= require("firmante_nombre", "Ingresá el nombre del firmante");
-      valid &= require("firmante_dni", "Ingresá el DNI del firmante");
-    }
-
-    return !!valid;
+    return ok;
   }
 
   function require(id, msg) {
     const el = document.getElementById(id);
-    if (!el || !el.value.trim()) {
-      markFieldError(el, msg);
-      return false;
-    }
+    if (!el || !el.value.trim()) { markError(el, msg); return false; }
     return true;
   }
-  function requireSelect(id, msg) {
+  function requireEmail(id, msg) {
     const el = document.getElementById(id);
-    if (!el || !el.value) {
-      markFieldError(el, msg);
+    if (!el || !el.value.trim()) { markError(el, msg); return false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim())) {
+      markError(el, "El mail no tiene un formato válido");
       return false;
     }
     return true;
   }
-  function markFieldError(el, msg) {
+  function markError(el, msg) {
     if (!el) return;
     const field = el.closest(".field");
     if (field) {
       field.classList.add("field-error");
       const err = document.createElement("div");
       err.className = "field-error-msg";
-      err.innerHTML = "⚠️ " + msg;
+      err.textContent = "⚠️ " + msg;
       field.appendChild(err);
     }
     el.focus();
   }
-  function markError(wrapId, msg) {
-    const wrap = document.getElementById(wrapId);
-    if (wrap) {
-      const err = document.createElement("div");
-      err.className = "field-error-msg";
-      err.innerHTML = "⚠️ " + msg;
-      wrap.appendChild(err);
-    }
-  }
   function clearErrors() {
     document.querySelectorAll(".field-error").forEach(f => f.classList.remove("field-error"));
     document.querySelectorAll(".field-error-msg").forEach(e => e.remove());
-  }
-
-  // ── Mostrar/ocultar "otro conocimiento" ──
-  document.getElementById("como_conocimiento").addEventListener("change", function() {
-    const otro = document.getElementById("campo_otro_conocimiento");
-    otro.style.display = this.value === "Otro medio" ? "block" : "none";
-  });
-
-  // ── Toggle tercero ──
-  function toggleTercero(val) {
-    document.getElementById("hubo_tercero").value = val;
-    const btnSi = document.getElementById("btn-tercero-si");
-    const btnNo = document.getElementById("btn-tercero-no");
-    const fields = document.getElementById("tercero-fields");
-    const msg    = document.getElementById("sin-tercero-msg");
-
-    btnSi.classList.toggle("active-si", val === "si");
-    btnNo.classList.toggle("active-no", val === "no");
-    btnSi.classList.toggle("toggle-btn", true);
-    btnNo.classList.toggle("toggle-btn", true);
-
-    if (val === "si") {
-      fields.classList.remove("hidden"); fields.classList.add("visible");
-      msg.classList.remove("visible"); msg.classList.add("hidden");
-    } else {
-      fields.classList.remove("visible"); fields.classList.add("hidden");
-      msg.classList.remove("hidden"); msg.classList.add("visible");
-    }
-  }
-
-  // ── Archivos ──
-  function markFile(input, dropId, label) {
-    const drop = document.getElementById(dropId);
-    if (input.files && input.files.length > 0) {
-      drop.classList.add("has-file");
-      drop.querySelector(".file-label").innerHTML = label + "<br><small>" + input.files[0].name + "</small>";
-    }
-  }
-
-  function fileToBase64(file) {
-    if (!file) return Promise.resolve(null);
-    return new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload = () => res(r.result);
-      r.onerror = () => rej(new Error("Error al leer el archivo"));
-      r.readAsDataURL(file);
-    });
-  }
-
-  // ── Canvas firma ──
-  const wrapper   = document.getElementById("wrapper");
-  const canvas    = document.getElementById("canvas");
-  const ctx       = canvas.getContext("2d");
-  const hint      = document.getElementById("hint");
-  let dibujando   = false;
-  let firmado     = false;
-
-  function initCanvas() {
-    const dpr = window.devicePixelRatio || 1;
-    const w   = wrapper.offsetWidth;
-    const h   = wrapper.offsetHeight;
-    canvas.width  = w * dpr;
-    canvas.height = h * dpr;
-    ctx.setTransform(1,0,0,1,0,0);
-    ctx.scale(dpr, dpr);
-    ctx.strokeStyle = "#1a3a6b";
-    ctx.lineWidth   = 2.5;
-    ctx.lineCap     = "round";
-    ctx.lineJoin    = "round";
-  }
-  window.addEventListener("load",   initCanvas);
-  window.addEventListener("resize", initCanvas);
-
-  function getXY(e) {
-    const rect = canvas.getBoundingClientRect();
-    const src  = e.touches ? e.touches[0] : e;
-    return { x: src.clientX - rect.left, y: src.clientY - rect.top };
-  }
-  function startDraw(e) {
-    e.preventDefault(); dibujando = true; firmado = true;
-    hint.style.opacity = "0";
-    const p = getXY(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
-  }
-  function draw(e) {
-    e.preventDefault();
-    if (!dibujando) return;
-    const p = getXY(e); ctx.lineTo(p.x, p.y); ctx.stroke();
-  }
-  function stopDraw() { dibujando = false; }
-
-  canvas.addEventListener("mousedown",  startDraw);
-  canvas.addEventListener("mousemove",  draw);
-  canvas.addEventListener("mouseup",    stopDraw);
-  canvas.addEventListener("mouseleave", stopDraw);
-  canvas.addEventListener("touchstart", startDraw, { passive: false });
-  canvas.addEventListener("touchmove",  draw,      { passive: false });
-  canvas.addEventListener("touchend",   stopDraw);
-
-  function limpiarFirma() {
-    initCanvas(); firmado = false; hint.style.opacity = "1";
+    document.getElementById("art-error").style.display = "none";
   }
 
   // ── Envío ──
   async function enviarFormulario() {
-    if (!validateStep(5)) return;
-    if (!firmado) { alert("Por favor dibuje su firma antes de enviar."); return; }
+    if (!validar()) return;
 
     const btn = document.getElementById("btnSubmit");
-    btn.disabled    = true;
-    btn.textContent = "⏳ Enviando denuncia...";
+    btn.disabled = true;
+    btn.querySelector(".btn-submit-label").innerHTML =
+      "⏳ Abriendo caso...<small>Por favor esperá</small>";
+
+    const g   = id => document.getElementById(id)?.value?.trim() || "";
+    const art = g("art_seleccionada");
+
+    const payload = {
+      nro_siniestro:    g("nro_siniestro"),
+      empleado_nombre:  g("empleado_nombre"),
+      empleador_nombre: g("empleador_nombre"),
+      mail_empleado:    g("mail_empleado"),
+      mail_empleador:   g("mail_empleador"),
+      art:              art,
+      template_informe: templateDeArt(art),
+    };
 
     try {
-      const [dniFrenteB64, dniDorsoB64, denunciaB64, altaTempranaB64, reciboSueldoB64] = await Promise.all([
-        fileToBase64(document.getElementById("dni_empleado_frente").files[0]),
-        fileToBase64(document.getElementById("dni_empleado_dorso").files[0]),
-        fileToBase64(document.getElementById("denuncia_policial").files[0] || null),
-        fileToBase64(document.getElementById("alta_temprana").files[0] || null),
-        fileToBase64(document.getElementById("recibo_sueldo").files[0] || null),
-      ]);
-
-      const g  = id => document.getElementById(id)?.value?.trim() || "";
-      const gv = id => document.getElementById(id)?.value || "";
-
-      const payload = {
-        // Paso 1 — Empleado
-        empleado_nombre:       g("empleado_nombre"),
-        empleado_dni:          g("empleado_dni"),
-        empleado_cuil:         g("empleado_cuil"),
-        domicilio_laboral:     g("domicilio_laboral"),
-        puesto_laboral:        g("puesto_laboral"),
-        jornada_trabajo:       gv("jornada_trabajo"),
-        horario_entrada:       g("horario_entrada"),
-        horario_salida:        g("horario_salida"),
-        jornada_descripcion:   g("jornada_descripcion"),
-        // Paso 2 — Accidente
-        fecha_conocimiento:    g("fecha_conocimiento"),
-        hora_conocimiento:     g("hora_conocimiento"),
-        como_conocimiento:     gv("como_conocimiento"),
-        otro_conocimiento:     g("otro_conocimiento_texto"),
-        descripcion_accidente: g("descripcion_accidente"),
-        fecha_accidente:       g("fecha_accidente"),
-        hora_accidente:        g("hora_accidente"),
-        lugar_accidente:       g("lugar_accidente"),
-        // Paso 3 — Tercero
-        hubo_tercero:          g("hubo_tercero"),
-        tercero_nombre:        g("tercero_nombre"),
-        tercero_dni:           g("tercero_dni"),
-        tercero_telefono:      g("tercero_telefono"),
-        tercero_domicilio:     g("tercero_domicilio"),
-        rodado_dominio:        g("rodado_dominio"),
-        rodado_marca:          g("rodado_marca"),
-        rodado_modelo:         g("rodado_modelo"),
-        rodado_anio:           g("rodado_anio"),
-        rodado_color:          g("rodado_color"),
-        rodado_tipo:           gv("rodado_tipo"),
-        tercero_aseguradora:   g("tercero_aseguradora"),
-        tercero_poliza:        g("tercero_poliza"),
-        tercero_observaciones: g("tercero_observaciones"),
-        // Paso 5 — Firmante
-        firmante_nombre:       g("firmante_nombre"),
-        firmante_dni:          g("firmante_dni"),
-        firmante_cargo:        g("firmante_cargo"),
-        empresa_razon_social:  g("empresa_razon_social"),
-        firma_base64:          canvas.toDataURL("image/png"),
-        // Archivos
-        dni_empleado_frente:   dniFrenteB64,
-        dni_empleado_dorso:    dniDorsoB64,
-        denuncia_policial:     denunciaB64,
-        doc_laboral_tipo:      gv("doc_laboral_tipo"),
-        alta_temprana:         altaTempranaB64,
-        recibo_sueldo:         reciboSueldoB64,
-      };
-
       const res = await fetch(WEBHOOK_URL, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(payload)
+        body:    JSON.stringify(payload),
       });
-
       if (!res.ok) throw new Error("HTTP " + res.status);
 
-      document.querySelector(".container").innerHTML = "";
+      document.getElementById("screenOkDetail").innerHTML =
+        `<strong>N° Siniestro:</strong> ${payload.nro_siniestro}<br>
+         <strong>Empleado:</strong> ${payload.empleado_nombre}<br>
+         <strong>Empleador:</strong> ${payload.empleador_nombre}<br>
+         <strong>ART:</strong> ${payload.art}<br>
+         <strong>Template:</strong> ${payload.template_informe}`;
+
+      document.querySelector(".page-wrap").innerHTML = "";
       document.getElementById("screenOk").style.display = "block";
-      document.querySelector(".container").appendChild(document.getElementById("screenOk"));
+      document.querySelector(".page-wrap").appendChild(document.getElementById("screenOk"));
 
     } catch (err) {
       document.getElementById("screenError").style.display = "block";
-      btn.disabled    = false;
-      btn.textContent = "✅ Enviar Denuncia ART";
+      btn.disabled = false;
+      btn.querySelector(".btn-submit-label").innerHTML =
+        "Abrir caso y enviar formularios<small>Se notificará al empleado y empleador</small>";
     }
   }
 
